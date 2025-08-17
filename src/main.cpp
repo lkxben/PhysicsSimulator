@@ -12,7 +12,7 @@ int main() {
     sf::RenderWindow window{sf::VideoMode{sf::Vector2u{windowWidth, windowHeight}}, "Particle Simulator"};
 
     std::vector<Particle> particles;
-    int n = 1000;
+    int n = 10000;
     double minV = -100.0, maxV = 100.0;
 
     std::random_device rd;
@@ -26,7 +26,7 @@ int main() {
         double y = yDist(gen);
         double vx = vDist(gen);
         double vy = vDist(gen);
-        particles.emplace_back(x, y, vx, vy, 3.0);
+        particles.emplace_back(x, y, vx, vy, 0.5);
     }
 
     ParticleSimulator simulator{particles, windowWidth, windowHeight};

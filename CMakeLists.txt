@@ -12,7 +12,9 @@ FetchContent_Declare(SFML
     SYSTEM)
 FetchContent_MakeAvailable(SFML)
 
-add_executable(ParticleSimulator src/main.cpp)
+file(GLOB SOURCES "src/*.cpp")
+
+add_executable(ParticleSimulator ${SOURCES})
 
 target_include_directories(ParticleSimulator PRIVATE include)
 
