@@ -1,17 +1,17 @@
 #include "CollisionChecker.h"
 #include <cmath>
 
-void CollisionChecker::check(Entity* a, Entity* b) {
+void CollisionChecker::check(Entity* a, Entity* b, double dt) {
     if (auto p1 = dynamic_cast<Particle*>(a)) {
         if (auto p2 = dynamic_cast<Particle*>(b)) {
-            check(p1, p2);
+            check(p1, p2, dt);
         } else if (auto o = dynamic_cast<Obstacle*>(b)) {
-            check(p1, o);
+            check(p1, o, dt);
         }
     }
 }
 
-void CollisionChecker::check(Particle& p1, Particle& p2) {
+void CollisionChecker::check(Particle& p1, Particle& p2, double dt) {
     double dx = p2.x - p1.x;
     double dy = p2.y - p1.y;
     double dist2 = dx*dx + dy*dy;
@@ -46,6 +46,6 @@ void CollisionChecker::check(Particle& p1, Particle& p2) {
     }
 }
 
-void CollisionChecker::check(Particle& p, Obstacle& o) {
-    o.collide(p);
+void CollisionChecker::check(Particle& p, Obstacle& o, double dt) {
+    o.collide(p, dt);
 }

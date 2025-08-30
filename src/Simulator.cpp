@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <cmath>
 #include <memory>
+#include <iostream>
 #include "Simulator.h"
 #include "Entity.h"
 #include "Particle.h"
@@ -55,6 +56,7 @@ void Simulator::update(double dt) {
     // Move particles and resolve collisions
     for (size_t i = 0; i < particles.size(); ++i) {
         Particle* p1 = particles[i].get();
+        // std::cout << "x: " << p1->x << " , y: " << p1->y;
         p1->move(dt);
 
         // Boundary collisions
@@ -75,13 +77,13 @@ void Simulator::update(double dt) {
             for (int c = std::max(0, col - 1); c <= std::min(cols - 1, col + 1); ++c) {
                 for (int j : grid[r * cols + c]) {
                     if (j <= i_int) continue;
-                    CollisionChecker::check(*p1, *particles[j]);
+                    CollisionChecker::check(*p1, *particles[j], dt);
                 }
             }
 
             // Collision with obstacles
             for (auto& obs : obstacles) {
-                CollisionChecker::check(*particles[i], *obs);
+                CollisionChecker::check(*particles[i], *obs, dt);
             }
         }
     }

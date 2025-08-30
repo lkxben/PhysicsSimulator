@@ -6,6 +6,7 @@
 #include "SolidRectObstacle.h"
 #include "HollowRectObstacle.h"
 #include "SolidCircleObstacle.h"
+#include "HollowCircleObstacle.h"
 
 class Renderer {
 public:
@@ -21,12 +22,13 @@ public:
 
     void draw(const std::vector<std::unique_ptr<Particle>>& particles, const std::vector<std::unique_ptr<Obstacle>>& obstacles) override {
         window.clear();
-        for (const auto& p : particles) {
-            p->draw(window);
-        }
 
         for (const auto& o : obstacles) {
             o->draw(window);
+        }
+
+        for (const auto& p : particles) {
+            p->draw(window);
         }
         window.display();
     }

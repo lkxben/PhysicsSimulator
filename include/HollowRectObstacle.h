@@ -45,7 +45,7 @@ struct HollowRectObstacle : public Obstacle {
         window.draw(rightWall);
     }
 
-    void collide(Particle& p) const override {
+    void collide(Particle& p, double dt) const override {
         double cosA = std::cos(rotation);
         double sinA = std::sin(rotation);
 

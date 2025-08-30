@@ -17,7 +17,7 @@ struct SolidCircleObstacle : public Obstacle {
         window.draw(shape);
     }
 
-    void collide(Particle& p) const override {
+    void collide(Particle& p, double dt) const override {
         double dx = p.x - x;
         double dy = p.y - y;
         double dist2 = dx*dx + dy*dy;
