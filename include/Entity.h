@@ -1,5 +1,6 @@
 #pragma once
 #include <cstddef>
+#include <SFML/Graphics.hpp>
 
 struct Entity {
     double x, y;
@@ -11,4 +12,5 @@ struct Entity {
         : x(x_), y(y_), vx(vx_), vy(vy_), mass(mass_), elasticity(elasticity_) {}
 
     virtual ~Entity() = default;
+    virtual void draw(sf::RenderWindow& window) const = 0;
 };

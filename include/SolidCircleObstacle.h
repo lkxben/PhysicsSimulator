@@ -9,4 +9,11 @@ struct SolidCircleObstacle : public Obstacle {
         : Obstacle(x_, y_, elasticity_), radius(radius_) {}
         
     virtual ~SolidCircleObstacle() = default;
+
+    void draw(sf::RenderWindow& window) const override {
+        sf::CircleShape shape{static_cast<float>(radius), 30};
+        shape.setPosition({static_cast<float>(x - radius),
+                        static_cast<float>(y - radius)});
+        window.draw(shape);
+    }
 };

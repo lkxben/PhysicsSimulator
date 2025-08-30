@@ -12,4 +12,11 @@ struct Particle : public Entity {
         x += vx * dt;
         y += vy * dt;
     }
+
+    void draw(sf::RenderWindow& window) const override {
+        sf::CircleShape shape{radius, 30};
+        shape.setPosition({static_cast<float>(x - radius),
+                        static_cast<float>(y - radius)});
+        window.draw(shape);
+    }
 };
