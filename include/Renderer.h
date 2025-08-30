@@ -3,8 +3,8 @@
 #include <SFML/System/Angle.hpp>
 #include <vector>
 #include "Particle.h"
-#include "LineObstacle.h"
-#include "CircleObstacle.h"
+#include "SolidRectObstacle.h"
+#include "SolidCircleObstacle.h"
 
 class Renderer {
 public:
@@ -28,13 +28,13 @@ public:
         }
 
         for (const auto& o : obstacles) {
-            if (auto line = dynamic_cast<LineObstacle*>(o.get())) {
-                sf::RectangleShape shape{sf::Vector2f(static_cast<float>(line->length), line->width)};
-                shape.setOrigin({static_cast<float>(line->length)/2, line->width/2});
-                shape.setPosition({static_cast<float>(line->x), static_cast<float>(line->y)});
-                shape.setRotation(sf::degrees(static_cast<float>(line->angle * 180.0 / M_PI)));
+            if (auto rect = dynamic_cast<SolidRectObstacle*>(o.get())) {
+                sf::RectangleShape shape{sf::Vector2f(static_cast<float>(rect->width), static_cast<float>(rect->height))};
+                shape.setOrigin({static_cast<float>(rect->width)/2, static_cast<float>(rect->height)/2});
+                shape.setPosition({static_cast<float>(rect->x), static_cast<float>(rect->y)});
+                shape.setRotation(sf::degrees(static_cast<float>(rect->rotation * 180.0 / M_PI)));
                 window.draw(shape);
-            } else if (auto circle = dynamic_cast<CircleObstacle*>(o.get())) {
+            } else if (auto circle = dynamic_cast<SolidCircleObstacle*>(o.get())) {
                 sf::CircleShape shape{static_cast<float>(circle->radius), 30};
                 shape.setPosition({static_cast<float>(circle->x - circle->radius),
                                 static_cast<float>(circle->y - circle->radius)});

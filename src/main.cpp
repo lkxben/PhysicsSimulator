@@ -34,11 +34,12 @@ int main() {
     particles.emplace_back(std::make_unique<Particle>(200, 400, 200, -92, 1.0, 5.0));
 
     // Generate obstacles
-    obstacles.push_back(std::make_unique<LineObstacle>(400.0, 150.0, 500.0, 0.0));
-    obstacles.push_back(std::make_unique<LineObstacle>(400.0, 450.0, 500.0, 0.0));
-    obstacles.push_back(std::make_unique<LineObstacle>(150.0, 300.0, 300.0, M_PI / 2));
-    obstacles.push_back(std::make_unique<LineObstacle>(650.0, 300.0, 300.0, M_PI / 2));
-    obstacles.push_back(std::make_unique<CircleObstacle>(400, 300, 100.0));
+    obstacles.push_back(std::make_unique<SolidRectObstacle>(400.0, 300, 1.0, 200.0, 0.0, 1.3));
+    // obstacles.push_back(std::make_unique<LineObstacle>(400.0, 150.0, 500.0, 0.0));
+    // obstacles.push_back(std::make_unique<LineObstacle>(400.0, 450.0, 500.0, 0.0));
+    // obstacles.push_back(std::make_unique<LineObstacle>(150.0, 300.0, 300.0, M_PI / 2));
+    // obstacles.push_back(std::make_unique<LineObstacle>(650.0, 300.0, 300.0, M_PI / 2));
+    // obstacles.push_back(std::make_unique<SolidCircleObstacle>(400, 300, 100.0));
 
     SFMLRenderer renderer{window};
     Simulator simulator{obstacles, particles, windowWidth, windowHeight};

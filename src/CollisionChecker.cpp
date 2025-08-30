@@ -47,41 +47,43 @@ void CollisionChecker::check(Particle& p1, Particle& p2) {
 }
 
 void CollisionChecker::check(Particle& p, Obstacle& o) {
-    if (auto line = dynamic_cast<LineObstacle*>(&o)) {
-        check(p, *line);
-    } else if (auto circle = dynamic_cast<CircleObstacle*>(&o)) {
-        check(p, *circle);
+    if (auto solidRect = dynamic_cast<SolidRectObstacle*>(&o)) {
+        check(p, *solidRect);
+    } else if (auto solidCircle = dynamic_cast<SolidCircleObstacle*>(&o)) {
+        check(p, *solidCircle);
     }
 }
 
-void CollisionChecker::check(Particle& p, LineObstacle& l) {
-    double cosA = std::cos(l.angle);
-    double sinA = std::sin(l.angle);
+void CollisionChecker::check(Particle& p, SolidRectObstacle& r) {
+    double cosA = std::cos(r.rotation);
+    double sinA = std::sin(r.rotation);
 
-    double halfLength = l.length / 2.0;
-    double lx0 = l.x - halfLength * cosA;
-    double ly0 = l.y - halfLength * sinA;
-    double lx1 = l.x + halfLength * cosA;
-    double ly1 = l.y + halfLength * sinA;
+    // Translate particle position to rectangle local coordinates
+    double relX = p.x - r.x;
+    double relY = p.y - r.y;
 
-    double px = p.x - lx0;
-    double py = p.y - ly0;
+    // Rotate particle position into rectangle's axis-aligned frame
+    double localX =  cosA * relX + sinA * relY;
+    double localY = -sinA * relX + cosA * relY;
 
-    double proj = px * cosA + py * sinA;
-    proj = std::clamp(proj, 0.0, l.length);
+    // Clamp to rectangle half extents
+    double halfW = r.width / 2.0;
+    double halfH = r.height / 2.0;
+    double clampedX = std::clamp(localX, -halfW, halfW);
+    double clampedY = std::clamp(localY, -halfH, halfH);
 
-    double closestX = lx0 + proj * cosA;
-    double closestY = ly0 + proj * sinA;
+    // Closest point in world coordinates
+    double closestX = cosA * clampedX - sinA * clampedY + r.x;
+    double closestY = sinA * clampedX + cosA * clampedY + r.y;
 
+    // Vector from closest point to particle
     double dx = p.x - closestX;
     double dy = p.y - closestY;
     double dist2 = dx*dx + dy*dy;
 
     if (dist2 < p.radius * p.radius) {
         double dist = std::sqrt(dist2);
-        if (dist == 0.0) {
-            dx = 1e-8; dy = 0; dist = 1e-8;
-        }
+        if (dist == 0.0) { dx = 1e-8; dy = 0; dist = 1e-8; }
 
         double nx = dx / dist;
         double ny = dy / dist;
@@ -92,14 +94,15 @@ void CollisionChecker::check(Particle& p, LineObstacle& l) {
 
         double vDotN = p.vx * nx + p.vy * ny;
         if (vDotN < 0) {
-            double e = 0.5 * (p.elasticity + l.elasticity);
+            double e = 0.5 * (p.elasticity + r.elasticity);
             p.vx -= (1 + e) * vDotN * nx;
             p.vy -= (1 + e) * vDotN * ny;
         }
     }
 }
 
-void CollisionChecker::check(Particle& p, CircleObstacle& c) {
+
+void CollisionChecker::check(Particle& p, SolidCircleObstacle& c) {
     double dx = p.x - c.x;
     double dy = p.y - c.y;
     double dist2 = dx*dx + dy*dy;
