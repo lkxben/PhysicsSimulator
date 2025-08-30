@@ -5,7 +5,7 @@
 
 class Renderer {
 public:
-    virtual void draw(const std::vector<Particle>& particles) = 0;
+    virtual void draw(const std::vector<Entity*>& entities) = 0;
 };
 
 class SFMLRenderer : public Renderer {
@@ -13,12 +13,14 @@ class SFMLRenderer : public Renderer {
 public:
     SFMLRenderer(sf::RenderWindow& w) : window(w) {}
 
-    void draw(const std::vector<Particle>& particles) override {
+    void draw(const std::vector<Entity*>& entities) override {
         window.clear();
-        for (const auto& p : particles) {
-            sf::CircleShape shape{p.radius, 30}; 
-            shape.setPosition({static_cast<float>(p.x - p.radius), static_cast<float>(p.y - p.radius)});
-            window.draw(shape);
+        for (auto e : entities) {
+            if (auto p = dynamic_cast<Particle*>(e)) {
+                sf::CircleShape shape{p->radius, 30};
+                shape.setPosition({static_cast<float>(p->x - p->radius), static_cast<float>(p->y - p->radius)});
+                window.draw(shape);
+            }
         }
         window.display();
     }

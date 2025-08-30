@@ -8,4 +8,6 @@ struct Entity {
 
     Entity(double x_, double y_, double vx_, double vy_, double mass_)
         : x(x_), y(y_), vx(vx_), vy(vy_), mass(mass_) {}
+
+    virtual ~Entity() = default;
 };

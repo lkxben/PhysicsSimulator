@@ -1,16 +1,28 @@
 #include <vector>
+#include <algorithm>
+#include <cmath>
+#include <memory>
 #include "Simulator.h"
+#include "Entity.h"
+#include "Particle.h"
 
-Simulator::Simulator(std::vector<Particle>& particles_, double w, double h)
-    : particles(particles_), width(w), height(h)
+Simulator::Simulator(std::vector<Entity*> entities_, std::vector<std::unique_ptr<Particle>>& particles_, double w, double h)
+    : entities(entities_), width(w), height(h)
 {
+    // Transfer ownership of particles
+    for (auto& p : particles_) {
+        particles.push_back(std::move(p));
+    }
+
     double maxRadius = 0.0;
     if (!particles.empty()) {
         maxRadius = std::max_element(
             particles.begin(),
             particles.end(),
-            [](const Particle& a, const Particle& b) { return a.radius < b.radius; }
-        )->radius;
+            [](const std::unique_ptr<Particle>& a, const std::unique_ptr<Particle>& b) {
+                return a->radius < b->radius;
+            }
+        )->get()->radius;
     }
 
     cellSize = 2 * maxRadius;
@@ -25,47 +37,41 @@ void Simulator::update(double dt) {
         cell.clear();
         cell.reserve(avgPerCell);
     }
-    for (size_t i = 0; i < particles.size(); i++) {
-        int row = static_cast<int>(particles[i].y / cellSize);
-        int col = static_cast<int>(particles[i].x / cellSize);
 
+    // Insert particles into spatial grid
+    for (size_t i = 0; i < particles.size(); ++i) {
+        Particle* p = particles[i].get();
+        int row = static_cast<int>(p->y / cellSize);
+        int col = static_cast<int>(p->x / cellSize);
         row = std::clamp(row, 0, rows - 1);
         col = std::clamp(col, 0, cols - 1);
-
         grid[row * cols + col].push_back(static_cast<int>(i));
     }
 
+    // Move particles and resolve collisions
     for (size_t i = 0; i < particles.size(); ++i) {
-        particles[i].move(dt);
+        Particle* p1 = particles[i].get();
+        p1->move(dt);
 
-        if (particles[i].x - particles[i].radius < 0) {
-            particles[i].vx = -particles[i].vx;
-            particles[i].x = particles[i].radius;
-        } else if (particles[i].x + particles[i].radius > width) {
-            particles[i].vx = -particles[i].vx;
-            particles[i].x = width - particles[i].radius;
-        }
+        // Boundary collisions
+        if (p1->x - p1->radius < 0) { p1->vx = -p1->vx; p1->x = p1->radius; }
+        else if (p1->x + p1->radius > width) { p1->vx = -p1->vx; p1->x = width - p1->radius; }
 
-        if (particles[i].y - particles[i].radius < 0) {
-            particles[i].vy = -particles[i].vy;
-            particles[i].y = particles[i].radius;
-        } else if (particles[i].y + particles[i].radius > height) {
-            particles[i].vy = -particles[i].vy;
-            particles[i].y = height - particles[i].radius;
-        }
+        if (p1->y - p1->radius < 0) { p1->vy = -p1->vy; p1->y = p1->radius; }
+        else if (p1->y + p1->radius > height) { p1->vy = -p1->vy; p1->y = height - p1->radius; }
 
-        int row = static_cast<int>(particles[i].y / cellSize);
-        int col = static_cast<int>(particles[i].x / cellSize);
-
+        int row = static_cast<int>(p1->y / cellSize);
+        int col = static_cast<int>(p1->x / cellSize);
         row = std::clamp(row, 0, rows - 1);
         col = std::clamp(col, 0, cols - 1);
         int i_int = static_cast<int>(i);
 
-        for (int r = std::max(0, row - 1); r <= std::min(rows - 1, row + 1); r++) {
-            for (int c = std::max(0, col - 1); c <= std::min(cols - 1, col + 1); c++) {
+        // Check collisions with nearby particles
+        for (int r = std::max(0, row - 1); r <= std::min(rows - 1, row + 1); ++r) {
+            for (int c = std::max(0, col - 1); c <= std::min(cols - 1, col + 1); ++c) {
                 for (int j : grid[r * cols + c]) {
                     if (j <= i_int) continue;
-                    resolveCollision(particles[i], particles[j]);
+                    resolveCollision(*p1, *particles[j]);
                 }
             }
         }
@@ -80,11 +86,7 @@ void Simulator::resolveCollision(Particle& p1, Particle& p2) {
 
     if (dist2 < radiiSum * radiiSum) {
         double dist = std::sqrt(dist2);
-        if (dist == 0.0) {
-            dx = 1e-8;
-            dy = 0;
-            dist = 1e-8;
-        }
+        if (dist == 0.0) { dx = 1e-8; dy = 0; dist = 1e-8; }
 
         double nx = dx / dist;
         double ny = dy / dist;

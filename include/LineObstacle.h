@@ -2,7 +2,7 @@
 #include <cstddef>
 #include "Obstacle.h"
 
-struct LineObstacle: public Obstacle {
+struct LineObstacle : public Obstacle {
     double length;
     double angle;
 

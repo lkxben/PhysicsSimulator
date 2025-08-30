@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include <random>
+#include "../include/Entity.h"
 #include "../include/Particle.h"
 #include "../include/Renderer.h"
 #include "../include/Simulator.h"
@@ -11,7 +12,8 @@ int main() {
 
     sf::RenderWindow window{sf::VideoMode{sf::Vector2u{windowWidth, windowHeight}}, "Physics Simulator"};
 
-    std::vector<Particle> particles;
+    std::vector<std::unique_ptr<Particle>> particles;
+    std::vector<Entity*> entities;
     int n = 10;
     double minV = -100.0, maxV = 100.0;
 
@@ -21,17 +23,20 @@ int main() {
     std::uniform_real_distribution<double> yDist(0.0, windowHeight);
     std::uniform_real_distribution<double> vDist(minV, maxV);
 
-    particles.emplace_back(400, 300, 100, -30, 50.0, 50.0);
-    particles.emplace_back(200, 500, -30, -30, 50.0, 50.0);
+    particles.emplace_back(std::make_unique<Particle>(400, 300, 100, -30, 50.0, 50.0));
+    entities.push_back(particles.back().get());
+    particles.emplace_back(std::make_unique<Particle>(200, 500, -30, -30, 50.0, 50.0));
+    entities.push_back(particles.back().get());
     for (int i = 0; i < n; ++i) {
         double x = xDist(gen);
         double y = yDist(gen);
         double vx = vDist(gen);
         double vy = vDist(gen);
-        particles.emplace_back(x, y, vx, vy, 1.0, 5.0);
+        particles.emplace_back(std::make_unique<Particle>(x, y, vx, vy, 1.0, 5.0));
+        entities.push_back(particles.back().get());
     }
 
-    Simulator simulator{particles, windowWidth, windowHeight};
+    Simulator simulator{entities, particles, windowWidth, windowHeight};
     SFMLRenderer renderer{window};
 
     sf::Clock clock;
@@ -47,8 +52,7 @@ int main() {
 
         double dt = clock.restart().asSeconds();
         simulator.update(dt);
-
-        renderer.draw(particles);
+        renderer.draw(entities);
     }
 
     return 0;
