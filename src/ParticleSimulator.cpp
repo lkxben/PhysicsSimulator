@@ -92,7 +92,7 @@ void ParticleSimulator::resolveCollision(Particle& p1, Particle& p2) {
         double relVel = (p2.vx - p1.vx) * nx + (p2.vy - p1.vy) * ny;
         if (relVel > 0) return;
 
-        double e = 1.0; // elastic collision
+        double e = std::min(p1.elasticity, p2.elasticity);
         double j = -(1 + e) * relVel / (1/p1.mass + 1/p2.mass);
 
         double ix = j * nx;
