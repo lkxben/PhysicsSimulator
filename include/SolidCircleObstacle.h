@@ -16,4 +16,35 @@ struct SolidCircleObstacle : public Obstacle {
                         static_cast<float>(y - radius)});
         window.draw(shape);
     }
+
+    void collide(Particle& p) const override {
+        double dx = p.x - x;
+        double dy = p.y - y;
+        double dist2 = dx*dx + dy*dy;
+        double radiiSum = p.radius + radius;
+
+        if (dist2 < radiiSum * radiiSum) {
+            double dist = std::sqrt(dist2);
+            if (dist == 0.0) { 
+                dx = 1e-8; dy = 0; 
+                dist = 1e-8; 
+            }
+
+            double nx = dx / dist;
+            double ny = dy / dist;
+
+            double relVel = p.vx * nx + p.vy * ny;
+
+            if (relVel < 0) {
+                double e = 0.5 * (p.elasticity + elasticity);
+
+                p.vx -= (1 + e) * relVel * nx;
+                p.vy -= (1 + e) * relVel * ny;
+            }
+
+            double overlap = radiiSum - dist;
+            p.x += nx * overlap;
+            p.y += ny * overlap;
+        }
+    }
 };

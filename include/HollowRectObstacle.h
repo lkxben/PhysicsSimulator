@@ -44,4 +44,55 @@ struct HollowRectObstacle : public Obstacle {
         rightWall.setRotation(sf::degrees(rotDeg));
         window.draw(rightWall);
     }
+
+    void collide(Particle& p) const override {
+        double cosA = std::cos(rotation);
+        double sinA = std::sin(rotation);
+
+        double halfW = width / 2.0;
+        double halfH = height / 2.0;
+        double halfT = thickness / 2.0;
+
+        auto checkWall = [&](double cx, double cy, double w, double h) {
+            double relX = p.x - cx;
+            double relY = p.y - cy;
+
+            double localX =  cosA * relX + sinA * relY;
+            double localY = -sinA * relX + cosA * relY;
+
+            double clampedX = std::clamp(localX, -w/2.0, w/2.0);
+            double clampedY = std::clamp(localY, -h/2.0, h/2.0);
+
+            double closestX = cosA * clampedX - sinA * clampedY + cx;
+            double closestY = sinA * clampedX + cosA * clampedY + cy;
+
+            double dx = p.x - closestX;
+            double dy = p.y - closestY;
+            double dist2 = dx*dx + dy*dy;
+
+            if (dist2 < p.radius * p.radius) {
+                double dist = std::sqrt(dist2);
+                if (dist == 0.0) { dx = 1e-8; dy = 0; dist = 1e-8; }
+
+                double nx = dx / dist;
+                double ny = dy / dist;
+
+                double overlap = p.radius - dist;
+                p.x += nx * overlap;
+                p.y += ny * overlap;
+
+                double vDotN = p.vx * nx + p.vy * ny;
+                if (vDotN < 0) {
+                    double e = 0.5 * (p.elasticity + elasticity);
+                    p.vx -= (1 + e) * vDotN * nx;
+                    p.vy -= (1 + e) * vDotN * ny;
+                }
+            }
+        };
+
+        checkWall(x, y - halfH + halfT, width, thickness);
+        checkWall(x, y + halfH - halfT, width, thickness);
+        checkWall(x - halfW + halfT, y, thickness, height);
+        checkWall(x + halfW - halfT, y, thickness, height);
+    }
 };

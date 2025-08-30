@@ -8,4 +8,5 @@ struct Obstacle : public Entity {
         : Entity(x_, y_, 0, 0, std::numeric_limits<double>::infinity(), elasticity_) {}
 
     virtual ~Obstacle() = default;
+    virtual void collide(Particle& p) const = 0;
 };
