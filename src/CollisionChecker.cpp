@@ -27,7 +27,7 @@ void CollisionChecker::check(Particle& p1, Particle& p2) {
         double relVel = (p2.vx - p1.vx) * nx + (p2.vy - p1.vy) * ny;
         if (relVel > 0) return;
 
-        double e = std::min(p1.elasticity, p2.elasticity);
+        double e = 0.5 * (p1.elasticity + p2.elasticity);
         double j = -(1 + e) * relVel / (1/p1.mass + 1/p2.mass);
 
         double ix = j * nx;
@@ -49,6 +49,8 @@ void CollisionChecker::check(Particle& p1, Particle& p2) {
 void CollisionChecker::check(Particle& p, Obstacle& o) {
     if (auto line = dynamic_cast<LineObstacle*>(&o)) {
         check(p, *line);
+    } else if (auto circle = dynamic_cast<CircleObstacle*>(&o)) {
+        check(p, *circle);
     }
 }
 
@@ -90,9 +92,40 @@ void CollisionChecker::check(Particle& p, LineObstacle& l) {
 
         double vDotN = p.vx * nx + p.vy * ny;
         if (vDotN < 0) {
-            double e = p.elasticity;
+            double e = 0.5 * (p.elasticity + l.elasticity);
             p.vx -= (1 + e) * vDotN * nx;
             p.vy -= (1 + e) * vDotN * ny;
         }
+    }
+}
+
+void CollisionChecker::check(Particle& p, CircleObstacle& c) {
+    double dx = p.x - c.x;
+    double dy = p.y - c.y;
+    double dist2 = dx*dx + dy*dy;
+    double radiiSum = p.radius + c.radius;
+
+    if (dist2 < radiiSum * radiiSum) {
+        double dist = std::sqrt(dist2);
+        if (dist == 0.0) { 
+            dx = 1e-8; dy = 0; 
+            dist = 1e-8; 
+        }
+
+        double nx = dx / dist;
+        double ny = dy / dist;
+
+        double relVel = p.vx * nx + p.vy * ny;
+
+        if (relVel < 0) {
+            double e = 0.5 * (p.elasticity + c.elasticity);
+
+            p.vx -= (1 + e) * relVel * nx;
+            p.vy -= (1 + e) * relVel * ny;
+        }
+
+        double overlap = radiiSum - dist;
+        p.x += nx * overlap;
+        p.y += ny * overlap;
     }
 }

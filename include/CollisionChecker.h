@@ -10,4 +10,5 @@ namespace CollisionChecker {
     void check(Particle& p1, Particle& p2);
     void check(Particle& p, Obstacle& o);
     void check(Particle& p, LineObstacle& l);
+    void check(Particle& p, CircleObstacle& c);
 }

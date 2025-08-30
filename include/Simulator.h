@@ -19,7 +19,5 @@ public:
 
     void update(double dt);
 
-    void resolveCollision(Particle& p1, Particle& p2);
-
     void run(Renderer& renderer);
 };

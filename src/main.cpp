@@ -1,9 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include <random>
-#include "../include/Entity.h"
-#include "../include/Particle.h"
-#include "../include/Obstacle.h"
 #include "../include/Renderer.h"
 #include "../include/Simulator.h"
 
@@ -13,33 +10,35 @@ int main() {
     const unsigned int windowHeight = 600;
 
     sf::RenderWindow window{sf::VideoMode{sf::Vector2u{windowWidth, windowHeight}}, "Physics Simulator"};
-
-    // Generate particles
     std::vector<std::unique_ptr<Particle>> particles;
     std::vector<std::unique_ptr<Obstacle>> obstacles;
-    int n = 10;
-    double minV = -100.0, maxV = 100.0;
+
+    // Generate particles
+    struct Vec2 { double x, y; };
+    Vec2 balls[] = {
+        {400, 300},  
+        {410, 295}, {410, 305},    
+        {420, 290}, {420, 300}, {420, 310},
+        {430, 285}, {430, 295}, {430, 305}, {430, 315}
+    };
 
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::uniform_real_distribution<double> xDist(0.0, windowWidth);
-    std::uniform_real_distribution<double> yDist(0.0, windowHeight);
-    std::uniform_real_distribution<double> vDist(minV, maxV);
+    std::uniform_real_distribution<double> posOffset(-0.5, 0.5);
 
-    particles.emplace_back(std::make_unique<Particle>(400, 300, 100, -30, 50.0, 50.0));
-    particles.emplace_back(std::make_unique<Particle>(200, 500, -30, -30, 50.0, 50.0));
-    // particles.emplace_back(std::make_unique<Particle>(500, 300, 500, -30, 50.0, 50.0));
-    for (int i = 0; i < n; ++i) {
-        double x = xDist(gen);
-        double y = yDist(gen);
-        double vx = vDist(gen);
-        double vy = vDist(gen);
-        particles.emplace_back(std::make_unique<Particle>(x, y, vx, vy, 1.0, 5.0));
+    for (auto& b : balls) {
+        double x = b.x + posOffset(gen);
+        double y = b.y + posOffset(gen);
+        particles.emplace_back(std::make_unique<Particle>(x, y, 0.0, 0.0, 1.0, 5.0));
     }
+    particles.emplace_back(std::make_unique<Particle>(200, 400, 200, -92, 1.0, 5.0));
 
     // Generate obstacles
-    obstacles.push_back(std::make_unique<LineObstacle>(50.0, 100.0, 600.0, 0.0));
-    obstacles.push_back(std::make_unique<LineObstacle>(50.0, 100.0, 600.0, 20.0));
+    obstacles.push_back(std::make_unique<LineObstacle>(400.0, 150.0, 500.0, 0.0));
+    obstacles.push_back(std::make_unique<LineObstacle>(400.0, 450.0, 500.0, 0.0));
+    obstacles.push_back(std::make_unique<LineObstacle>(150.0, 300.0, 300.0, M_PI / 2));
+    obstacles.push_back(std::make_unique<LineObstacle>(650.0, 300.0, 300.0, M_PI / 2));
+    obstacles.push_back(std::make_unique<CircleObstacle>(400, 300, 100.0));
 
     SFMLRenderer renderer{window};
     Simulator simulator{obstacles, particles, windowWidth, windowHeight};

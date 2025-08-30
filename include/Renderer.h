@@ -4,6 +4,7 @@
 #include <vector>
 #include "Particle.h"
 #include "LineObstacle.h"
+#include "CircleObstacle.h"
 
 class Renderer {
 public:
@@ -33,9 +34,13 @@ public:
                 shape.setPosition({static_cast<float>(line->x), static_cast<float>(line->y)});
                 shape.setRotation(sf::degrees(static_cast<float>(line->angle * 180.0 / M_PI)));
                 window.draw(shape);
+            } else if (auto circle = dynamic_cast<CircleObstacle*>(o.get())) {
+                sf::CircleShape shape{static_cast<float>(circle->radius), 30};
+                shape.setPosition({static_cast<float>(circle->x - circle->radius),
+                                static_cast<float>(circle->y - circle->radius)});
+                window.draw(shape);
             }
         }
-
         window.display();
     }
 
