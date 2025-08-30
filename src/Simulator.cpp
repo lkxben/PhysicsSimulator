@@ -1,7 +1,7 @@
 #include <vector>
-#include "ParticleSimulator.h"
+#include "Simulator.h"
 
-ParticleSimulator::ParticleSimulator(std::vector<Particle>& particles_, double w, double h)
+Simulator::Simulator(std::vector<Particle>& particles_, double w, double h)
     : particles(particles_), width(w), height(h)
 {
     double maxRadius = 0.0;
@@ -20,7 +20,7 @@ ParticleSimulator::ParticleSimulator(std::vector<Particle>& particles_, double w
     grid.resize(cols * rows);
 }
 
-void ParticleSimulator::update(double dt) {
+void Simulator::update(double dt) {
     for (auto& cell : grid) {
         cell.clear();
         cell.reserve(avgPerCell);
@@ -72,7 +72,7 @@ void ParticleSimulator::update(double dt) {
     }
 }
 
-void ParticleSimulator::resolveCollision(Particle& p1, Particle& p2) {
+void Simulator::resolveCollision(Particle& p1, Particle& p2) {
     double dx = p2.x - p1.x;
     double dy = p2.y - p1.y;
     double dist2 = dx*dx + dy*dy;

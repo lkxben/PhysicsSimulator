@@ -3,12 +3,12 @@
 #include "Particle.h"
 #include <SFML/Graphics.hpp>
 
-class ParticleRenderer {
+class Renderer {
 public:
     virtual void draw(const std::vector<Particle>& particles) = 0;
 };
 
-class SFMLRenderer : public ParticleRenderer {
+class SFMLRenderer : public Renderer {
     sf::RenderWindow& window;
 public:
     SFMLRenderer(sf::RenderWindow& w) : window(w) {}

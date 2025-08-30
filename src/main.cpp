@@ -2,14 +2,14 @@
 #include <vector>
 #include <random>
 #include "../include/Particle.h"
-#include "../include/ParticleRenderer.h"
-#include "../include/ParticleSimulator.h"
+#include "../include/Renderer.h"
+#include "../include/Simulator.h"
 
 int main() {
     const unsigned int windowWidth = 800;
     const unsigned int windowHeight = 600;
 
-    sf::RenderWindow window{sf::VideoMode{sf::Vector2u{windowWidth, windowHeight}}, "Particle Simulator"};
+    sf::RenderWindow window{sf::VideoMode{sf::Vector2u{windowWidth, windowHeight}}, "Physics Simulator"};
 
     std::vector<Particle> particles;
     int n = 10;
@@ -28,10 +28,10 @@ int main() {
         double y = yDist(gen);
         double vx = vDist(gen);
         double vy = vDist(gen);
-        particles.emplace_back(x, y, vx, vy, 5.0, 1.0);
+        particles.emplace_back(x, y, vx, vy, 1.0, 5.0);
     }
 
-    ParticleSimulator simulator{particles, windowWidth, windowHeight};
+    Simulator simulator{particles, windowWidth, windowHeight};
     SFMLRenderer renderer{window};
 
     sf::Clock clock;
