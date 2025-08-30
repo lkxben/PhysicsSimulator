@@ -28,9 +28,10 @@ public:
 
         for (const auto& o : obstacles) {
             if (auto line = dynamic_cast<LineObstacle*>(o.get())) {
-                sf::RectangleShape shape{sf::Vector2f(static_cast<float>(line->length), 2.0f)};
+                sf::RectangleShape shape{sf::Vector2f(static_cast<float>(line->length), line->width)};
+                shape.setOrigin({static_cast<float>(line->length)/2, line->width/2});
                 shape.setPosition({static_cast<float>(line->x), static_cast<float>(line->y)});
-                shape.setRotation(sf::degrees(static_cast<float>(line->angle)));
+                shape.setRotation(sf::degrees(static_cast<float>(line->angle * 180.0 / M_PI)));
                 window.draw(shape);
             }
         }

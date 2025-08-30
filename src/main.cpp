@@ -28,6 +28,7 @@ int main() {
 
     particles.emplace_back(std::make_unique<Particle>(400, 300, 100, -30, 50.0, 50.0));
     particles.emplace_back(std::make_unique<Particle>(200, 500, -30, -30, 50.0, 50.0));
+    // particles.emplace_back(std::make_unique<Particle>(500, 300, 500, -30, 50.0, 50.0));
     for (int i = 0; i < n; ++i) {
         double x = xDist(gen);
         double y = yDist(gen);
@@ -37,7 +38,8 @@ int main() {
     }
 
     // Generate obstacles
-    obstacles.push_back(std::make_unique<LineObstacle>(400.0, 300.0, 200.0, 45.0));
+    obstacles.push_back(std::make_unique<LineObstacle>(50.0, 100.0, 600.0, 0.0));
+    obstacles.push_back(std::make_unique<LineObstacle>(50.0, 100.0, 600.0, 20.0));
 
     SFMLRenderer renderer{window};
     Simulator simulator{obstacles, particles, windowWidth, windowHeight};
