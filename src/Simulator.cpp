@@ -6,12 +6,15 @@
 #include "Entity.h"
 #include "Particle.h"
 
-Simulator::Simulator(std::vector<Entity*> entities_, std::vector<std::unique_ptr<Particle>>& particles_, double w, double h)
-    : entities(entities_), width(w), height(h)
+Simulator::Simulator(std::vector<std::unique_ptr<Obstacle>>& obstacles_, std::vector<std::unique_ptr<Particle>>& particles_, double w, double h)
+    : width(w), height(h)
 {
-    // Transfer ownership of particles
     for (auto& p : particles_) {
         particles.push_back(std::move(p));
+    }
+
+    for (auto& o : obstacles_) {
+        obstacles.push_back(std::move(o));
     }
 
     double maxRadius = 0.0;
@@ -120,6 +123,6 @@ void Simulator::run(Renderer& renderer) {
         renderer.pollEvents();
         double dt = clock.restart().asSeconds();
         update(dt);
-        renderer.draw(entities);
+        renderer.draw(particles, obstacles);
     }
 }

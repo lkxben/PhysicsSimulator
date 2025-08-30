@@ -1,11 +1,13 @@
 #pragma once
+#include <SFML/Graphics.hpp>
+#include <SFML/System/Angle.hpp>
 #include <vector>
 #include "Particle.h"
-#include <SFML/Graphics.hpp>
+#include "LineObstacle.h"
 
 class Renderer {
 public:
-    virtual void draw(const std::vector<Entity*>& entities) = 0;
+    virtual void draw(const std::vector<std::unique_ptr<Particle>>& particles, const std::vector<std::unique_ptr<Obstacle>>& obstacless) = 0;
     virtual bool isRunning() const = 0;
     virtual void pollEvents() = 0; 
 };
@@ -15,16 +17,29 @@ class SFMLRenderer : public Renderer {
 public:
     SFMLRenderer(sf::RenderWindow& w) : window(w) {}
 
-    void draw(const std::vector<Entity*>& entities) override {
+    void draw(const std::vector<std::unique_ptr<Particle>>& particles, const std::vector<std::unique_ptr<Obstacle>>& obstacles) override {
         window.clear();
-        for (auto e : entities) {
-            if (auto p = dynamic_cast<Particle*>(e)) {
-                sf::CircleShape shape{p->radius, 30};
-                shape.setPosition({static_cast<float>(p->x - p->radius), static_cast<float>(p->y - p->radius)});
+        for (const auto& p : particles) {
+            sf::CircleShape shape{p->radius, 30};
+            shape.setPosition({static_cast<float>(p->x - p->radius),
+                            static_cast<float>(p->y - p->radius)});
+            window.draw(shape);
+        }
+
+        for (const auto& o : obstacles) {
+            if (auto line = dynamic_cast<LineObstacle*>(o.get())) {
+                sf::RectangleShape shape{sf::Vector2f(static_cast<float>(line->length), 2.0f)};
+                shape.setPosition({static_cast<float>(line->x), static_cast<float>(line->y)});
+                shape.setRotation(sf::degrees(static_cast<float>(line->angle)));
                 window.draw(shape);
             }
         }
+
         window.display();
+    }
+
+    void draw(const std::vector<Obstacle>& obstacles) {
+        
     }
 
     bool isRunning() const override {
