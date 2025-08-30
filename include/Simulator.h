@@ -2,6 +2,7 @@
 #include <vector>
 #include "Particle.h"
 #include "Entity.h"
+#include "Renderer.h"
 
 class Simulator {
     std::vector<Entity*> entities;
@@ -18,4 +19,6 @@ public:
     void update(double dt);
 
     void resolveCollision(Particle& p1, Particle& p2);
+
+    void run(Renderer& renderer);
 };

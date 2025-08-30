@@ -112,3 +112,14 @@ void Simulator::resolveCollision(Particle& p1, Particle& p2) {
         p2.y += overlap * ny;
     }
 }
+
+void Simulator::run(Renderer& renderer) {
+    sf::Clock clock;
+
+    while (renderer.isRunning()) {
+        renderer.pollEvents();
+        double dt = clock.restart().asSeconds();
+        update(dt);
+        renderer.draw(entities);
+    }
+}

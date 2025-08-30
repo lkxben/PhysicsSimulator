@@ -36,24 +36,10 @@ int main() {
         entities.push_back(particles.back().get());
     }
 
-    Simulator simulator{entities, particles, windowWidth, windowHeight};
     SFMLRenderer renderer{window};
-
-    sf::Clock clock;
-
-    while (window.isOpen()) {
-        while (auto eventOpt = window.pollEvent()) {
-            sf::Event event = *eventOpt;
-
-            if (event.is<sf::Event::Closed>()) {
-                window.close();
-            }
-        }
-
-        double dt = clock.restart().asSeconds();
-        simulator.update(dt);
-        renderer.draw(entities);
-    }
+    Simulator simulator{entities, particles, windowWidth, windowHeight};
+    
+    simulator.run(renderer);
 
     return 0;
 }

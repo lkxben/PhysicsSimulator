@@ -6,6 +6,8 @@
 class Renderer {
 public:
     virtual void draw(const std::vector<Entity*>& entities) = 0;
+    virtual bool isRunning() const = 0;
+    virtual void pollEvents() = 0; 
 };
 
 class SFMLRenderer : public Renderer {
@@ -23,5 +25,15 @@ public:
             }
         }
         window.display();
+    }
+
+    bool isRunning() const override {
+        return window.isOpen();
+    }
+
+    void pollEvents() override {
+        auto eventOpt = window.pollEvent();
+        sf::Event event = *eventOpt; 
+        if (event.is<sf::Event::Closed>()) { window.close(); }
     }
 };
