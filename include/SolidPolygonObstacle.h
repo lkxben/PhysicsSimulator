@@ -31,7 +31,7 @@ struct SolidPolygonObstacle : public Obstacle {
             sf::Vector2f a = vertices[i0];
             sf::Vector2f b = vertices[i1];
             sf::Vector2f c = vertices[i2];
-            return cross(b - a, c - b) < 0; // clockwise
+            return cross(b - a, c - b) < 0;
         };
         auto pointInTriangle = [&](sf::Vector2f p, sf::Vector2f a, sf::Vector2f b, sf::Vector2f c) {
             sf::Vector2f v0 = c - a, v1 = b - a, v2 = p - a;
@@ -66,7 +66,6 @@ struct SolidPolygonObstacle : public Obstacle {
                 }
 
                 if (!anyInside) {
-                    // SFML 3+ aggregate initialization
                     va.append({vertices[i0], sf::Color(150,150,150)});
                     va.append({vertices[i1], sf::Color(150,150,150)});
                     va.append({vertices[i2], sf::Color(150,150,150)});

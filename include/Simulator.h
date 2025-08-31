@@ -4,10 +4,12 @@
 #include "Entity.h"
 #include "Renderer.h"
 #include "Obstacle.h"
+#include "Forcefield.h"
 
 class Simulator {
     std::vector<std::unique_ptr<Obstacle>> obstacles;
     std::vector<std::unique_ptr<Particle>> particles;
+    std::vector<std::unique_ptr<Forcefield>> forcefields;
     double width, height;
     int cols, rows;
     size_t avgPerCell;
@@ -15,7 +17,7 @@ class Simulator {
     std::vector<std::vector<int>> grid;
 
 public:
-    Simulator(std::vector<std::unique_ptr<Obstacle>>& obstacles_, std::vector<std::unique_ptr<Particle>>& particles_, double w, double h);
+    Simulator(std::vector<std::unique_ptr<Obstacle>>& obstacles_, std::vector<std::unique_ptr<Particle>>& particles_, std::vector<std::unique_ptr<Forcefield>>& forcefields_, double w, double h);
 
     void update(double dt);
 

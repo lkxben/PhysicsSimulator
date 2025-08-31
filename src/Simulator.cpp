@@ -8,7 +8,7 @@
 #include "Particle.h"
 #include "CollisionChecker.h"
 
-Simulator::Simulator(std::vector<std::unique_ptr<Obstacle>>& obstacles_, std::vector<std::unique_ptr<Particle>>& particles_, double w, double h)
+Simulator::Simulator(std::vector<std::unique_ptr<Obstacle>>& obstacles_, std::vector<std::unique_ptr<Particle>>& particles_, std::vector<std::unique_ptr<Forcefield>>& forcefields_, double w, double h)
     : width(w), height(h)
 {
     for (auto& p : particles_) {
@@ -17,6 +17,10 @@ Simulator::Simulator(std::vector<std::unique_ptr<Obstacle>>& obstacles_, std::ve
 
     for (auto& o : obstacles_) {
         obstacles.push_back(std::move(o));
+    }
+
+    for (auto& f : forcefields_) {
+        forcefields.push_back(std::move(f));
     }
 
     double maxRadius = 0.0;
@@ -74,6 +78,11 @@ void Simulator::update(double dt) {
 
         // Check collisions with nearby particles
         for (int r = std::max(0, row - 1); r <= std::min(rows - 1, row + 1); ++r) {
+            // Apply forcefield
+            for (auto& field : forcefields) {
+                field->apply(*particles[i], dt);
+            }
+
             for (int c = std::max(0, col - 1); c <= std::min(cols - 1, col + 1); ++c) {
                 for (int j : grid[r * cols + c]) {
                     if (j <= i_int) continue;
@@ -96,6 +105,6 @@ void Simulator::run(Renderer& renderer) {
         renderer.pollEvents();
         double dt = clock.restart().asSeconds();
         update(dt);
-        renderer.draw(particles, obstacles);
+        renderer.draw(particles, obstacles, forcefields);
     }
 }
