@@ -26,17 +26,18 @@ int main() {
     std::mt19937 gen(rd());
     std::uniform_real_distribution<double> posOffset(-0.5, 0.5);
 
-    for (auto& b : balls) {
-        double x = b.x + posOffset(gen);
-        double y = b.y + posOffset(gen);
-        particles.emplace_back(std::make_unique<Particle>(x, y, 0.0, 0.0, 1.0, 5.0, 0.8));
-    }
-    particles.emplace_back(std::make_unique<Particle>(10, 100, 300, 30, 1.0, 5.0));
-    particles.emplace_back(std::make_unique<Particle>(210, 300, 200, 0, 1.0, 5.0));
+    // for (auto& b : balls) {
+    //     double x = b.x + posOffset(gen);
+    //     double y = b.y + posOffset(gen);
+    //     particles.emplace_back(std::make_unique<Particle>(x, y, 0.0, 0.0, 1.0, 5.0));
+    // }
+    particles.emplace_back(std::make_unique<Particle>(10, 100, 3000, 300, 1.0, 5.0));
+    // particles.emplace_back(std::make_unique<Particle>(210, 300, 200, 0, 1.0, 5.0));
 
     // Generate obstacles
-    // obstacles.push_back(std::make_unique<HollowRectObstacle>(400.0, 300.0, 500.0, 300.0, 10.0, 0, 0.8));
-    obstacles.push_back(std::make_unique<HollowCircleObstacle>(400.0, 300.0, 200.0, 2.0, 0.9));
+    // obstacles.push_back(std::make_unique<HollowRectObstacle>(400.0, 300.0, 500.0, 300.0, 10.0, 0, 1.1));
+    // obstacles.push_back(std::make_unique<HollowCircleObstacle>(400.0, 300.0, 200.0, 2.0, 1.1));
+    obstacles.push_back(std::make_unique<SolidRectObstacle>(400.0, 300.0, 200.0, 200.0, 0, 1.1));
 
     SFMLRenderer renderer{window};
     Simulator simulator{obstacles, particles, windowWidth, windowHeight};

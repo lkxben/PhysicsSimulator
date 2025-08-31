@@ -38,10 +38,35 @@ struct SolidRectObstacle : public Obstacle {
         double closestX = cosA * clampedX - sinA * clampedY + x;
         double closestY = sinA * clampedX + cosA * clampedY + y;
 
-        // Vector from closest point to particle
         double dx = p.x - closestX;
         double dy = p.y - closestY;
         double dist2 = dx*dx + dy*dy;
+
+        double speed2 = p.vx * p.vx + p.vy * p.vy;
+        double threshold = p.radius / dt;
+        double threshold2 = threshold * threshold;
+
+        if (speed2 > threshold2) {
+            double prevX = p.x - p.vx * dt;
+            double prevY = p.y - p.vy * dt;
+
+            double segX = closestX - prevX;
+            double segY = closestY - prevY;
+            double segLen2 = segX*segX + segY*segY;
+            if (segLen2 > 0) {
+                double t = ((p.vx)*segX + (p.vy)*segY) / segLen2;
+                t = std::clamp(t, 0.0, 1.0);
+                double projX = prevX + t * p.vx * dt;
+                double projY = prevY + t * p.vy * dt;
+                double cdx = projX - closestX;
+                double cdy = projY - closestY;
+                if (cdx*cdx + cdy*cdy < p.radius * p.radius) {
+                    dx = cdx;
+                    dy = cdy;
+                    dist2 = dx*dx + dy*dy;
+                }
+            }
+        }
 
         if (dist2 < p.radius * p.radius) {
             double dist = std::sqrt(dist2);
