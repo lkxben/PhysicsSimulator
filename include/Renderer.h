@@ -9,10 +9,11 @@
 #include "HollowCircleObstacle.h"
 #include "SolidPolygonObstacle.h"
 #include "HollowPolygonObstacle.h"
+#include "Forcefield.h"
 
 class Renderer {
 public:
-    virtual void draw(const std::vector<std::unique_ptr<Particle>>& particles, const std::vector<std::unique_ptr<Obstacle>>& obstacless) = 0;
+    virtual void draw(const std::vector<std::unique_ptr<Particle>>& particles, const std::vector<std::unique_ptr<Obstacle>>& obstacless, const std::vector<std::unique_ptr<Forcefield>>& forcefields) = 0;
     virtual bool isRunning() const = 0;
     virtual void pollEvents() = 0; 
 };
@@ -22,8 +23,12 @@ class SFMLRenderer : public Renderer {
 public:
     SFMLRenderer(sf::RenderWindow& w) : window(w) {}
 
-    void draw(const std::vector<std::unique_ptr<Particle>>& particles, const std::vector<std::unique_ptr<Obstacle>>& obstacles) override {
+    void draw(const std::vector<std::unique_ptr<Particle>>& particles, const std::vector<std::unique_ptr<Obstacle>>& obstacles, const std::vector<std::unique_ptr<Forcefield>>& forcefields) override {
         window.clear();
+
+        for (const auto& f : forcefields) {
+            f->draw(window);
+        }
 
         for (const auto& o : obstacles) {
             o->draw(window);

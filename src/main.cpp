@@ -12,6 +12,7 @@ int main() {
     sf::RenderWindow window{sf::VideoMode{sf::Vector2u{windowWidth, windowHeight}}, "Physics Simulator"};
     std::vector<std::unique_ptr<Particle>> particles;
     std::vector<std::unique_ptr<Obstacle>> obstacles;
+    std::vector<std::unique_ptr<Forcefield>> forcefields;
 
     // Generate particles
     struct Vec2 { double x, y; };
@@ -29,43 +30,33 @@ int main() {
     for (auto& b : balls) {
         double x = b.x + posOffset(gen);
         double y = b.y + posOffset(gen);
-        particles.emplace_back(std::make_unique<Particle>(x, y, 0.0, 0.0, 1.0, 5.0));
+        particles.emplace_back(std::make_unique<Particle>(x, y, 0.0, 0.0, 1.0, 5.0, 0.9));
     }
-    particles.emplace_back(std::make_unique<Particle>(350, 250, 0, 0, 1.0, 5.0));
-    particles.emplace_back(std::make_unique<Particle>(210, 310, 200, 0, 1.0, 5.0));
+    particles.emplace_back(std::make_unique<Particle>(200, 300, 300, 0, 1.0, 5.0, 0.9));
 
     // Generate obstacles
-    // obstacles.push_back(std::make_unique<HollowRectObstacle>(400.0, 300.0, 500.0, 300.0, 10.0, 0, 1.1));
-    // obstacles.push_back(std::make_unique<HollowCircleObstacle>(400.0, 300.0, 200.0, 2.0, 1.1));
-    // obstacles.push_back(std::make_unique<SolidRectObstacle>(400.0, 300.0, 200.0, 200.0, 0, 1.1));
-std::vector<sf::Vector2f> crescentVertices;
-double centerX = 400, centerY = 300;
-double outerRadius = 120, innerRadius = 80;
-int outerPoints = 25;
-int innerPoints = 25;
+    obstacles.push_back(std::make_unique<HollowRectObstacle>(400.0, 300.0, 500.0, 300.0, 10.0, 0, 0.9));
 
-// Outer arc (top to bottom, clockwise)
-for (int i = 0; i < outerPoints; ++i) {
-    double angle = M_PI * (i / static_cast<double>(outerPoints - 1)); // 180° arc
-    double x = centerX + outerRadius * cos(angle);
-    double y = centerY - outerRadius * sin(angle);
-    crescentVertices.push_back({static_cast<float>(x), static_cast<float>(y)});
-}
+    // // Horizontal cushions (top & bottom)
+    // obstacles.push_back(std::make_unique<SolidRectObstacle>(277.5, 150.0, 233.0, 7.0, 0.0, 0.9));
+    // obstacles.push_back(std::make_unique<SolidRectObstacle>(522.5, 150.0, 233.0, 7.0, 0.0, 0.9));
+    // obstacles.push_back(std::make_unique<SolidRectObstacle>(277.5, 450.0, 233.0, 7.0, 0.0, 0.9));
+    // obstacles.push_back(std::make_unique<SolidRectObstacle>(522.5, 450.0, 233.0, 7.0, 0.0, 0.9));
 
-// Inner arc (bottom to top, clockwise) - offset to create crescent
-for (int i = innerPoints - 1; i >= 0; --i) {
-    double angle = M_PI * (i / static_cast<double>(innerPoints - 1)); // 180° arc
-    double x = centerX + innerRadius * cos(angle) + 40; // offset right to make crescent
-    double y = centerY - innerRadius * sin(angle);
-    crescentVertices.push_back({static_cast<float>(x), static_cast<float>(y)});
-}
-    
-    // obstacles.push_back(std::make_unique<HollowPolygonObstacle>(crescentVertices, 0.9));
-    obstacles.push_back(std::make_unique<SolidPolygonObstacle>(crescentVertices, 0.9));
-    
+    // // Vertical cushions (left & right)
+    // obstacles.push_back(std::make_unique<SolidRectObstacle>(150.0, 225.0, 7.0, 135.0, 0.0, 0.9));
+    // obstacles.push_back(std::make_unique<SolidRectObstacle>(150.0, 370.0, 7.0, 135.0, 0.0, 0.9));
+    // obstacles.push_back(std::make_unique<SolidRectObstacle>(650.0, 225.0, 7.0, 135.0, 0.0, 0.9));
+    // obstacles.push_back(std::make_unique<SolidRectObstacle>(650.0, 370.0, 7.0, 135.0, 0.0, 0.9));
+
+    // Generate forcefields
+    forcefields.push_back(std::make_unique<Forcefield>(
+        std::make_unique<RectArea>(400, 300, 480, 280),
+        std::make_unique<DragEffect>(0.15)
+    ));
 
     SFMLRenderer renderer{window};
-    Simulator simulator{obstacles, particles, windowWidth, windowHeight};
+    Simulator simulator{obstacles, particles, forcefields, windowWidth, windowHeight};
     
     simulator.run(renderer);
 
