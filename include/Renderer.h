@@ -7,6 +7,8 @@
 #include "HollowRectObstacle.h"
 #include "SolidCircleObstacle.h"
 #include "HollowCircleObstacle.h"
+#include "SolidPolygonObstacle.h"
+#include "HollowPolygonObstacle.h"
 
 class Renderer {
 public:
