@@ -13,9 +13,13 @@ FetchContent_Declare(SFML
 FetchContent_MakeAvailable(SFML)
 
 file(GLOB SOURCES "src/*.cpp")
+set(SOURCES_NO_MAIN ${SOURCES})
+list(REMOVE_ITEM SOURCES_NO_MAIN "${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp")
 
 add_executable(PhysicsSimulator ${SOURCES})
-
 target_include_directories(PhysicsSimulator PRIVATE include)
-
 target_link_libraries(PhysicsSimulator PRIVATE SFML::Graphics)
+
+add_executable(pool ${SOURCES_NO_MAIN} scenarios/pool/Pool.cpp)
+target_include_directories(pool PRIVATE include)
+target_link_libraries(pool PRIVATE SFML::Graphics)

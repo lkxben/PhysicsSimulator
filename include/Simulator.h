@@ -7,6 +7,7 @@
 #include "Forcefield.h"
 
 class Simulator {
+protected:
     std::vector<std::unique_ptr<Obstacle>> obstacles;
     std::vector<std::unique_ptr<Particle>> particles;
     std::vector<std::unique_ptr<Forcefield>> forcefields;
@@ -19,7 +20,9 @@ class Simulator {
 public:
     Simulator(std::vector<std::unique_ptr<Obstacle>>& obstacles_, std::vector<std::unique_ptr<Particle>>& particles_, std::vector<std::unique_ptr<Forcefield>>& forcefields_, double w, double h);
 
-    void update(double dt);
+    virtual void update(double dt);
 
     void run(Renderer& renderer);
+
+    virtual ~Simulator() = default;
 };

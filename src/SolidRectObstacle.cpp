@@ -2,8 +2,8 @@
 #include <cmath>
 #include <algorithm>
 
-SolidRectObstacle::SolidRectObstacle(double x_, double y_, double width_, double height_, double rotation_, double elasticity_)
-    : Obstacle(x_, y_, elasticity_), width(width_), height(height_), rotation(rotation_) {}
+SolidRectObstacle::SolidRectObstacle(double x_, double y_, double width_, double height_, double rotation_, double elasticity_, sf::Color color_)
+    : Obstacle(x_, y_, elasticity_, color_), width(width_), height(height_), rotation(rotation_) {}
 
 void SolidRectObstacle::draw(sf::RenderWindow& window) const {
     sf::RectangleShape shape{sf::Vector2f(static_cast<float>(width), static_cast<float>(height))};

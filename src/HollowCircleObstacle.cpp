@@ -2,8 +2,8 @@
 #include <algorithm>
 #include <cmath>
 
-HollowCircleObstacle::HollowCircleObstacle(double x_, double y_, double radius_, double thickness_, double elasticity_)
-    : Obstacle(x_, y_, elasticity_), thickness(thickness_), radius(radius_) {}
+HollowCircleObstacle::HollowCircleObstacle(double x_, double y_, double radius_, double thickness_, double elasticity_, sf::Color color_)
+    : Obstacle(x_, y_, elasticity_, color_), thickness(thickness_), radius(radius_) {}
 
 void HollowCircleObstacle::draw(sf::RenderWindow& window) const {
     sf::CircleShape outer(static_cast<float>(radius), 60);

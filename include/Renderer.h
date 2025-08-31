@@ -50,8 +50,8 @@ public:
         sf::Event event = *eventOpt; 
         if (event.is<sf::Event::Closed>()) { window.close(); }
         for (auto& p : particles) {
-            if (auto lp = dynamic_cast<DraggableParticle*>(p.get())) {
-                lp->handleEvent(window);
+            if (auto dp = dynamic_cast<DraggableParticle*>(p.get())) {
+                dp->handleEvent(window);
             }
         }
     }

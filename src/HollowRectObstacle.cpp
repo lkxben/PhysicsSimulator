@@ -2,8 +2,8 @@
 #include <cmath>
 #include <algorithm>
 
-HollowRectObstacle::HollowRectObstacle(double x_, double y_, double width_, double height_, double thickness_, double rotation_, double elasticity_)
-    : Obstacle(x_, y_, elasticity_), width(width_), height(height_), thickness(thickness_), rotation(rotation_) {}
+HollowRectObstacle::HollowRectObstacle(double x_, double y_, double width_, double height_, double thickness_, double rotation_, double elasticity_, sf::Color color_)
+    : Obstacle(x_, y_, elasticity_, color_), width(width_), height(height_), thickness(thickness_), rotation(rotation_) {}
 
 void HollowRectObstacle::draw(sf::RenderWindow& window) const {
     float halfW = static_cast<float>(width / 2.0);
