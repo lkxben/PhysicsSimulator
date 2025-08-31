@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.28)
-project(ParticleSimulator LANGUAGES CXX)
+project(PhysicsSimulator LANGUAGES CXX)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
@@ -14,8 +14,8 @@ FetchContent_MakeAvailable(SFML)
 
 file(GLOB SOURCES "src/*.cpp")
 
-add_executable(ParticleSimulator ${SOURCES})
+add_executable(PhysicsSimulator ${SOURCES})
 
-target_include_directories(ParticleSimulator PRIVATE include)
+target_include_directories(PhysicsSimulator PRIVATE include)
 
-target_link_libraries(ParticleSimulator PRIVATE SFML::Graphics)
+target_link_libraries(PhysicsSimulator PRIVATE SFML::Graphics)
