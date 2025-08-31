@@ -32,7 +32,8 @@ int main() {
         double y = b.y + posOffset(gen);
         particles.emplace_back(std::make_unique<Particle>(x, y, 0.0, 0.0, 1.0, 5.0, 0.9));
     }
-    particles.emplace_back(std::make_unique<Particle>(200, 300, 300, 0, 1.0, 5.0, 0.9));
+
+    particles.emplace_back(std::make_unique<DraggableParticle>(200, 300, 1.0, 5.0, 0.9));
 
     // Generate obstacles
     obstacles.push_back(std::make_unique<HollowRectObstacle>(400.0, 300.0, 500.0, 300.0, 10.0, 0, 0.9));

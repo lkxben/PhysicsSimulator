@@ -102,7 +102,7 @@ void Simulator::run(Renderer& renderer) {
     sf::Clock clock;
 
     while (renderer.isRunning()) {
-        renderer.pollEvents();
+        renderer.pollEvents(particles);
         double dt = clock.restart().asSeconds();
         update(dt);
         renderer.draw(particles, obstacles, forcefields);
