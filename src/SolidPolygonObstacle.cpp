@@ -60,9 +60,9 @@ void SolidPolygonObstacle::draw(sf::RenderWindow& window) const {
             }
 
             if (!anyInside) {
-                va.append({vertices[i0], sf::Color(150,150,150)});
-                va.append({vertices[i1], sf::Color(150,150,150)});
-                va.append({vertices[i2], sf::Color(150,150,150)});
+                va.append({vertices[i0], color});
+                va.append({vertices[i1], color});
+                va.append({vertices[i2], color});
                 remaining.erase(remaining.begin() + i);
                 earFound = true;
                 break;
