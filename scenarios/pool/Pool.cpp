@@ -81,6 +81,9 @@ int main() {
     obstacles.push_back(makeTriangle(776, 120, 768, 128, 776, 128));
     obstacles.push_back(makeTriangle(768, 472, 776, 480, 776, 472));
 
+    // Table
+    obstacles.push_back(std::make_unique<HollowRectObstacle>(400, 300, 792, 432, 20.0));
+
     // Pockets
     float pocketRadius = 16.0f;
 
