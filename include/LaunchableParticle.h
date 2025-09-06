@@ -2,12 +2,12 @@
 #include <cmath>
 #include "Particle.h"
 
-struct DraggableParticle : Particle {
+struct LaunchableParticle : Particle {
     bool isDragging = false;
     sf::Vector2f dragStart;
     sf::Vector2f dragCurrent;
 
-    DraggableParticle(double x_, double y_, double mass_ = 1.0, float radius_ = 5.0, double elasticity_ = 1.0, sf::Color color_ = sf::Color::White)
+    LaunchableParticle(double x_, double y_, double mass_ = 1.0, float radius_ = 5.0, double elasticity_ = 1.0, sf::Color color_ = sf::Color::White)
         : Particle(x_, y_, 0.0, 0.0, mass_, radius_, elasticity_, color_) {}
 
     void handleEvent(const sf::RenderWindow& window) {

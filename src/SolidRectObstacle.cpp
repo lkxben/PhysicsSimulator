@@ -10,6 +10,7 @@ void SolidRectObstacle::draw(sf::RenderWindow& window) const {
     shape.setOrigin({static_cast<float>(width)/2, static_cast<float>(height)/2});
     shape.setPosition({static_cast<float>(x), static_cast<float>(y)});
     shape.setRotation(sf::degrees(static_cast<float>(rotation * 180.0 / M_PI)));
+    shape.setFillColor(color);
     window.draw(shape);
 }
 

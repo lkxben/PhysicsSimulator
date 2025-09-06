@@ -16,24 +16,28 @@ void HollowRectObstacle::draw(sf::RenderWindow& window) const {
     topWall.setOrigin(topWall.getSize() / 2.0f);
     topWall.setPosition(center + sf::Vector2f(0.f, -halfH + halfT));
     topWall.setRotation(sf::degrees(rotDeg));
+    topWall.setFillColor(color);
     window.draw(topWall);
 
     sf::RectangleShape bottomWall{sf::Vector2f(static_cast<float>(width), static_cast<float>(thickness))};
     bottomWall.setOrigin(bottomWall.getSize() / 2.0f);
     bottomWall.setPosition(center + sf::Vector2f(0.f, halfH - halfT));
     bottomWall.setRotation(sf::degrees(rotDeg));
+    bottomWall.setFillColor(color);
     window.draw(bottomWall);
 
     sf::RectangleShape leftWall{sf::Vector2f(static_cast<float>(thickness), static_cast<float>(height))};
     leftWall.setOrigin(leftWall.getSize() / 2.0f);
     leftWall.setPosition(center + sf::Vector2f(-halfW + halfT, 0.f));
     leftWall.setRotation(sf::degrees(rotDeg));
+    leftWall.setFillColor(color);
     window.draw(leftWall);
 
     sf::RectangleShape rightWall{sf::Vector2f(static_cast<float>(thickness), static_cast<float>(height))};
     rightWall.setOrigin(rightWall.getSize() / 2.0f);
     rightWall.setPosition(center + sf::Vector2f(halfW - halfT, 0.f));
     rightWall.setRotation(sf::degrees(rotDeg));
+    rightWall.setFillColor(color);
     window.draw(rightWall);
 }
 

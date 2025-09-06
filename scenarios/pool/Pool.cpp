@@ -19,11 +19,13 @@ int main() {
 
     // Generate particles
     struct Vec2 { double x, y; };
+    double xShift = 180;
+
     Vec2 balls[] = {
-        {400, 300},
-        {416, 292}, {416, 308},
-        {432, 284}, {432, 300}, {432, 316},
-        {448, 276}, {448, 292}, {448, 308}, {448, 324}
+        {400 + xShift, 300},
+        {416 + xShift, 292}, {416 + xShift, 308},
+        {432 + xShift, 284}, {432 + xShift, 300}, {432 + xShift, 316},
+        {448 + xShift, 276}, {448 + xShift, 292}, {448 + xShift, 308}, {448 + xShift, 324}
     };
 
     std::random_device rd;
@@ -33,11 +35,12 @@ int main() {
     for (size_t i = 0; i < std::size(balls); ++i) {
         double x = balls[i].x + posOffset(gen);
         double y = balls[i].y + posOffset(gen);
-        sf::Color color = (i % 2 == 0) ? sf::Color(255, 165, 0) : sf::Color(128, 0, 128);
+        // sf::Color color = (i % 2 == 0) ? sf::Color(255, 165, 0) : sf::Color(128, 0, 128);
+        sf::Color color = (i % 2 == 0) ? sf::Color(255, 140, 0) : sf::Color(0, 255, 255);
         particles.emplace_back(std::make_unique<CueBall>(x, y, 0.0, 0.0, 1.0, 8.0, 0.9, color));
     }
 
-    particles.emplace_back(std::make_unique<DraggableParticle>(200, 300, 1.0, 8.0, 0.9, sf::Color::White));
+    particles.emplace_back(std::make_unique<LaunchableParticle>(200, 300, 1.0, 8.0, 0.9, sf::Color::White));
 
     // Generate cushions
     float cushionThickness = 8.0f;

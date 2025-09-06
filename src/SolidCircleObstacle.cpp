@@ -9,6 +9,7 @@ void SolidCircleObstacle::draw(sf::RenderWindow& window) const {
     sf::CircleShape shape{static_cast<float>(radius), 30};
     shape.setPosition({static_cast<float>(x - radius),
                        static_cast<float>(y - radius)});
+    shape.setFillColor(color);
     window.draw(shape);
 }
 

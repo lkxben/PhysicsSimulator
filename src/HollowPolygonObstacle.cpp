@@ -19,7 +19,7 @@ void HollowPolygonObstacle::draw(sf::RenderWindow& window) const {
         shape.setPoint(i, vertices[i]);
     shape.setFillColor(sf::Color::Transparent);
     shape.setOutlineThickness(static_cast<float>(thickness));
-    shape.setOutlineColor(sf::Color(150,150,150));
+    shape.setOutlineColor(color);
     window.draw(shape);
 }
 

@@ -9,7 +9,7 @@
 #include "HollowCircleObstacle.h"
 #include "SolidPolygonObstacle.h"
 #include "HollowPolygonObstacle.h"
-#include "DraggableParticle.h"
+#include "LaunchableParticle.h"
 #include "Forcefield.h"
 
 class Renderer {
@@ -50,7 +50,7 @@ public:
         sf::Event event = *eventOpt; 
         if (event.is<sf::Event::Closed>()) { window.close(); }
         for (auto& p : particles) {
-            if (auto dp = dynamic_cast<DraggableParticle*>(p.get())) {
+            if (auto dp = dynamic_cast<LaunchableParticle*>(p.get())) {
                 dp->handleEvent(window);
             }
         }

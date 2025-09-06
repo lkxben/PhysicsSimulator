@@ -33,7 +33,7 @@ int main() {
         particles.emplace_back(std::make_unique<Particle>(x, y, 0.0, 0.0, 1.0, 10.0, 0.9, sf::Color::Green));
     }
 
-    particles.emplace_back(std::make_unique<DraggableParticle>(200, 300, 1.0, 10.0, 0.9));
+    particles.emplace_back(std::make_unique<LaunchableParticle>(200, 300, 1.0, 10.0, 0.9));
 
     // Generate obstacles
     obstacles.emplace_back(std::make_unique<HollowRectObstacle>(400, 300, 500, 300, 10.0, 0, 0.9, sf::Color::White));
