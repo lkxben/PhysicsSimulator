@@ -3,7 +3,7 @@
 #include <random>
 #include "../include/Renderer.h"
 #include "../include/Simulator.h"
-#include "CueBall.h"
+#include "Ball.h"
 #include "Pocket.h"
 #include "PoolSimulator.h"
 
@@ -30,17 +30,16 @@ int main() {
 
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::uniform_real_distribution<double> posOffset(-0.5, 0.5);
+    std::uniform_real_distribution<double> posOffset(-0.7, 0.7);
 
     for (size_t i = 0; i < std::size(balls); ++i) {
         double x = balls[i].x + posOffset(gen);
         double y = balls[i].y + posOffset(gen);
-        // sf::Color color = (i % 2 == 0) ? sf::Color(255, 165, 0) : sf::Color(128, 0, 128);
         sf::Color color = (i % 2 == 0) ? sf::Color(255, 140, 0) : sf::Color(0, 255, 255);
-        particles.emplace_back(std::make_unique<CueBall>(x, y, 0.0, 0.0, 1.0, 8.0, 0.9, color));
+        particles.emplace_back(std::make_unique<Ball>(x, y, 0.0, 0.0, 1.0, 8.0, 0.9, color));
     }
 
-    particles.emplace_back(std::make_unique<LaunchableParticle>(200, 300, 1.0, 8.0, 0.9, sf::Color::White));
+    particles.emplace_back(std::make_unique<LaunchableParticle>(200, 300, 1.0, 8.0, 0.9, sf::Color::White, 2000));
 
     // Generate cushions
     float cushionThickness = 8.0f;
@@ -100,7 +99,7 @@ int main() {
     // Generate forcefields
     forcefields.push_back(std::make_unique<Forcefield>(
         std::make_unique<RectArea>(400, 300, 736, 376, sf::Color(0, 102, 204)),
-        std::make_unique<DragEffect>(0.25)
+        std::make_unique<DragEffect>(0.28)
     ));
 
     SFMLRenderer renderer{window};

@@ -1,6 +1,6 @@
 #pragma once
 #include "../../include/SolidCircleObstacle.h"
-#include "CueBall.h"
+#include "Ball.h"
 
 struct Pocket : public SolidCircleObstacle {
     Pocket(double x_, double y_, double radius_)
@@ -19,7 +19,7 @@ struct Pocket : public SolidCircleObstacle {
         double dy = p.y - y;
         double dist2 = dx*dx + dy*dy;
         if (dx*dx + dy*dy <= radius*radius) {
-            if (auto cue = dynamic_cast<CueBall*>(&p)) {
+            if (auto cue = dynamic_cast<Ball*>(&p)) {
                 cue->alive = false;
             }
         }

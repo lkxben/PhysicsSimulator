@@ -17,7 +17,7 @@ struct PoolSimulator : public Simulator {
         particles.erase(
             std::remove_if(particles.begin(), particles.end(),
                 [](const std::unique_ptr<Particle>& p) {
-                    if (CueBall* cb = dynamic_cast<CueBall*>(p.get()))
+                    if (Ball* cb = dynamic_cast<Ball*>(p.get()))
                         return !cb->alive;
                     return false;
                 }),

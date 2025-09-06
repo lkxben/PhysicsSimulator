@@ -1,10 +1,10 @@
 #pragma once
 #include "../../include/Particle.h"
 
-struct CueBall : public Particle {
+struct Ball : public Particle {
     bool alive = true;
 
-    CueBall(double x_, double y_, double vx_ = 0.0, double vy_ = 0.0, double mass_ = 1.0, float radius_ = 8.0, double elasticity_ = 1.0, sf::Color color_ = sf::Color::White)
+    Ball(double x_, double y_, double vx_ = 0.0, double vy_ = 0.0, double mass_ = 1.0, float radius_ = 8.0, double elasticity_ = 1.0, sf::Color color_ = sf::Color::White)
         : Particle(x_, y_, vx_, vy_, mass_, radius_, elasticity_, color_) {}
 
     void draw(sf::RenderWindow& window) const override {

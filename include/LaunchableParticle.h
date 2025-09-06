@@ -6,9 +6,11 @@ struct LaunchableParticle : Particle {
     bool isDragging = false;
     sf::Vector2f dragStart;
     sf::Vector2f dragCurrent;
+    double maxForce;
+    double forceScale;
 
-    LaunchableParticle(double x_, double y_, double mass_ = 1.0, float radius_ = 5.0, double elasticity_ = 1.0, sf::Color color_ = sf::Color::White)
-        : Particle(x_, y_, 0.0, 0.0, mass_, radius_, elasticity_, color_) {}
+    LaunchableParticle(double x_, double y_, double mass_ = 1.0, float radius_ = 5.0, double elasticity_ = 1.0, sf::Color color_ = sf::Color::White, double maxForce_ = 500.0f, double forceScale_ = 2.0f)
+        : Particle(x_, y_, 0.0, 0.0, mass_, radius_, elasticity_, color_), maxForce(maxForce_), forceScale(forceScale_) {}
 
     void handleEvent(const sf::RenderWindow& window) {
         const double EPS = 1e-1;
@@ -31,8 +33,16 @@ struct LaunchableParticle : Particle {
                 dragCurrent = mousePos;
             }
         } else if (isDragging) {
-            vx = static_cast<double>((dragStart.x - dragCurrent.x) * 2.0f);
-            vy = static_cast<double>((dragStart.y - dragCurrent.y) * 2.0f);
+            sf::Vector2f pull = dragStart - dragCurrent;
+            float length = std::sqrt(pull.x * pull.x + pull.y * pull.y);
+            if (length > 0.f) {
+                sf::Vector2f dir = pull / length; 
+                float forceMag = length * forceScale;
+                if (forceMag > maxForce) forceMag = maxForce;
+
+                vx = static_cast<double>(dir.x * forceMag / mass);
+                vy = static_cast<double>(dir.y * forceMag / mass);
+            }
             isDragging = false;
         }
     }
