@@ -16,6 +16,7 @@ int main() {
     std::vector<std::unique_ptr<Particle>> particles;
     std::vector<std::unique_ptr<Obstacle>> obstacles;
     std::vector<std::unique_ptr<Forcefield>> forcefields;
+    std::vector<std::unique_ptr<Constraint>> constraints;
 
     // Generate particles
     struct Vec2 { double x, y; };
@@ -107,7 +108,7 @@ int main() {
 
     SFMLRenderer renderer{window};
     ForceSystem fs;
-    PoolSimulator simulator{obstacles, particles, forcefields, windowWidth, windowHeight};
+    PoolSimulator simulator{obstacles, particles, forcefields, constraints, windowWidth, windowHeight};
     ConstraintSystem cs;
     
     simulator.run(renderer, events, fs, cs);

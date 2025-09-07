@@ -7,8 +7,9 @@ struct PoolSimulator : public Simulator {
     PoolSimulator(std::vector<std::unique_ptr<Obstacle>>& obstacles_,
                   std::vector<std::unique_ptr<Particle>>& particles_,
                   std::vector<std::unique_ptr<Forcefield>>& forcefields_,
+                  std::vector<std::unique_ptr<Constraint>>& constraints_,
                   double w, double h)
-        : Simulator(obstacles_, particles_, forcefields_, w, h)
+        : Simulator(obstacles_, particles_, forcefields_, constraints_, w, h)
     {}
 
     void update(double dt) {

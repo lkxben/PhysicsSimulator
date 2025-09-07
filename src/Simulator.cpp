@@ -8,7 +8,7 @@
 #include "Particle.h"
 #include "CollisionChecker.h"
 
-Simulator::Simulator(std::vector<std::unique_ptr<Obstacle>>& obstacles_, std::vector<std::unique_ptr<Particle>>& particles_, std::vector<std::unique_ptr<Forcefield>>& forcefields_, double w, double h)
+Simulator::Simulator(std::vector<std::unique_ptr<Obstacle>>& obstacles_, std::vector<std::unique_ptr<Particle>>& particles_, std::vector<std::unique_ptr<Forcefield>>& forcefields_, std::vector<std::unique_ptr<Constraint>>& constraints_, double w, double h)
     : width(w), height(h)
 {
     for (auto& p : particles_) {
@@ -21,6 +21,10 @@ Simulator::Simulator(std::vector<std::unique_ptr<Obstacle>>& obstacles_, std::ve
 
     for (auto& f : forcefields_) {
         forcefields.push_back(std::move(f));
+    }
+
+    for (auto& c : constraints_) {
+        constraints.push_back(std::move(c));
     }
 
     double maxRadius = 0.0;
@@ -103,10 +107,11 @@ void Simulator::run(Renderer& renderer, EventManager& events, ForceSystem& fs, C
 
     while (renderer.isRunning()) {
         events.pollEvents();
+        
         double dt = clock.restart().asSeconds();
         fs.apply(particles, dt);
         update(dt);
         cs.applyAll(dt);
-        renderer.draw(particles, obstacles, forcefields);
+        renderer.draw(particles, obstacles, forcefields, constraints);
     }
 }

@@ -14,7 +14,7 @@ int main() {
     const unsigned int windowWidth = 800;
     const unsigned int windowHeight = 1000;
 
-    sf::RenderWindow window{sf::VideoMode{sf::Vector2u{windowWidth, windowHeight}}, "Main"};
+    sf::RenderWindow window{sf::VideoMode{sf::Vector2u{windowWidth, windowHeight}}, "Double Pendulum"};
     std::vector<std::unique_ptr<Particle>> particles;
     std::vector<std::unique_ptr<Obstacle>> obstacles;
     std::vector<std::unique_ptr<Forcefield>> forcefields;

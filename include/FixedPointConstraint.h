@@ -15,4 +15,8 @@ struct FixedPointConstraint : Constraint {
         p->vx = 0;
         p->vy = 0;
     }
+
+    void draw(sf::RenderWindow& window) const override {
+        return;
+    }
 };

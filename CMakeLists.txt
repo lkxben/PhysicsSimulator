@@ -31,3 +31,7 @@ target_link_libraries(threeBody PRIVATE SFML::Graphics)
 add_executable(plasmaCloud ${SOURCES_NO_MAIN} scenarios/plasmaCloud/PlasmaCloud.cpp)
 target_include_directories(plasmaCloud PRIVATE include)
 target_link_libraries(plasmaCloud PRIVATE SFML::Graphics)
+
+add_executable(doublePendulum ${SOURCES_NO_MAIN} scenarios/doublePendulum/DoublePendulum.cpp)
+target_include_directories(doublePendulum PRIVATE include)
+target_link_libraries(doublePendulum PRIVATE SFML::Graphics)

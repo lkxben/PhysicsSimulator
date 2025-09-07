@@ -8,12 +8,14 @@
 #include "EventManager.h"
 #include "ForceSystem.h"
 #include "ConstraintSystem.h"
+#include "Constraint.h"
 
 class Simulator {
 protected:
     std::vector<std::unique_ptr<Obstacle>> obstacles;
     std::vector<std::unique_ptr<Particle>> particles;
     std::vector<std::unique_ptr<Forcefield>> forcefields;
+    std::vector<std::unique_ptr<Constraint>> constraints;
     double width, height;
     int cols, rows;
     size_t avgPerCell;
@@ -21,7 +23,7 @@ protected:
     std::vector<std::vector<int>> grid;
 
 public:
-    Simulator(std::vector<std::unique_ptr<Obstacle>>& obstacles_, std::vector<std::unique_ptr<Particle>>& particles_, std::vector<std::unique_ptr<Forcefield>>& forcefields_, double w, double h);
+    Simulator(std::vector<std::unique_ptr<Obstacle>>& obstacles_, std::vector<std::unique_ptr<Particle>>& particles_, std::vector<std::unique_ptr<Forcefield>>& forcefields_, std::vector<std::unique_ptr<Constraint>>& constraints_, double w, double h);
 
     virtual void update(double dt);
 

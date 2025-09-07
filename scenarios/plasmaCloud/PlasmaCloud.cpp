@@ -15,6 +15,7 @@ int main() {
     std::vector<std::unique_ptr<Particle>> particles;
     std::vector<std::unique_ptr<Obstacle>> obstacles;
     std::vector<std::unique_ptr<Forcefield>> forcefields;
+    std::vector<std::unique_ptr<Constraint>> constraints;
     ForceSystem fs;
 
     fs.addForce(Force::electric(1000));
@@ -45,7 +46,7 @@ int main() {
     }
 
     SFMLRenderer renderer{window};
-    Simulator simulator{obstacles, particles, forcefields, windowWidth, windowHeight};
+    Simulator simulator{obstacles, particles, forcefields, constraints, windowWidth, windowHeight};
     EventManager events{window};
     ConstraintSystem cs;
 
