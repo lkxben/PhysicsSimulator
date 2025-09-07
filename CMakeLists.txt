@@ -23,3 +23,7 @@ target_link_libraries(PhysicsSimulator PRIVATE SFML::Graphics)
 add_executable(pool ${SOURCES_NO_MAIN} scenarios/pool/Pool.cpp)
 target_include_directories(pool PRIVATE include)
 target_link_libraries(pool PRIVATE SFML::Graphics)
+
+add_executable(threeBody ${SOURCES_NO_MAIN} scenarios/threeBody/ThreeBody.cpp)
+target_include_directories(threeBody PRIVATE include)
+target_link_libraries(threeBody PRIVATE SFML::Graphics)

@@ -12,7 +12,7 @@ int main() {
     const unsigned int windowWidth = 1000;
     const unsigned int windowHeight = 600;
 
-    sf::RenderWindow window{sf::VideoMode{sf::Vector2u{windowWidth, windowHeight}}, "Physics Simulator"};
+    sf::RenderWindow window{sf::VideoMode{sf::Vector2u{windowWidth, windowHeight}}, "Pool"};
     std::vector<std::unique_ptr<Particle>> particles;
     std::vector<std::unique_ptr<Obstacle>> obstacles;
     std::vector<std::unique_ptr<Forcefield>> forcefields;
