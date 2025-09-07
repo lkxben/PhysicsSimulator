@@ -106,9 +106,10 @@ int main() {
     particles.push_back(std::move(particle));
 
     SFMLRenderer renderer{window};
+    ForceSystem fs;
     PoolSimulator simulator{obstacles, particles, forcefields, windowWidth, windowHeight};
     
-    simulator.run(renderer, events);
+    simulator.run(renderer, events, fs);
 
     return 0;
 }

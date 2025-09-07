@@ -98,12 +98,13 @@ void Simulator::update(double dt) {
     }
 }
 
-void Simulator::run(Renderer& renderer, EventManager& events) {
+void Simulator::run(Renderer& renderer, EventManager& events, ForceSystem& fs) {
     sf::Clock clock;
 
     while (renderer.isRunning()) {
         events.pollEvents();
         double dt = clock.restart().asSeconds();
+        fs.apply(particles, dt);
         update(dt);
         renderer.draw(particles, obstacles, forcefields);
     }

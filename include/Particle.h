@@ -4,6 +4,7 @@
 
 struct Particle : public Entity {
     float radius;
+    double fx, fy;
 
     Particle(double x_, double y_, double vx_, double vy_, double mass_ = 1.0, float radius_ = 5.0, double elasticity_ = 1.0, sf::Color color_ = sf::Color::White)
         : Entity(x_, y_, vx_, vy_, mass_, elasticity_, color_), radius(radius_) {}
