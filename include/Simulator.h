@@ -5,6 +5,7 @@
 #include "Renderer.h"
 #include "Obstacle.h"
 #include "Forcefield.h"
+#include "EventManager.h"
 
 class Simulator {
 protected:
@@ -22,7 +23,7 @@ public:
 
     virtual void update(double dt);
 
-    void run(Renderer& renderer);
+    void run(Renderer& renderer, EventManager& events);
 
     virtual ~Simulator() = default;
 };

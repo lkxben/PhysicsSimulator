@@ -16,7 +16,6 @@ class Renderer {
 public:
     virtual void draw(const std::vector<std::unique_ptr<Particle>>& particles, const std::vector<std::unique_ptr<Obstacle>>& obstacless, const std::vector<std::unique_ptr<Forcefield>>& forcefields) = 0;
     virtual bool isRunning() const = 0;
-    virtual void pollEvents(std::vector<std::unique_ptr<Particle>>& particles) = 0; 
 };
 
 class SFMLRenderer : public Renderer {
@@ -43,16 +42,5 @@ public:
 
     bool isRunning() const override {
         return window.isOpen();
-    }
-
-    void pollEvents(std::vector<std::unique_ptr<Particle>>& particles) override {
-        auto eventOpt = window.pollEvent();
-        sf::Event event = *eventOpt; 
-        if (event.is<sf::Event::Closed>()) { window.close(); }
-        for (auto& p : particles) {
-            if (auto dp = dynamic_cast<LaunchableParticle*>(p.get())) {
-                dp->handleEvent(window);
-            }
-        }
     }
 };

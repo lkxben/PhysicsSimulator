@@ -9,7 +9,7 @@
 
 int main() {
     // Set up window
-    const unsigned int windowWidth = 800;
+    const unsigned int windowWidth = 1000;
     const unsigned int windowHeight = 600;
 
     sf::RenderWindow window{sf::VideoMode{sf::Vector2u{windowWidth, windowHeight}}, "Physics Simulator"};
@@ -22,10 +22,10 @@ int main() {
     double xShift = 180;
 
     Vec2 balls[] = {
-        {400 + xShift, 300},
-        {416 + xShift, 292}, {416 + xShift, 308},
-        {432 + xShift, 284}, {432 + xShift, 300}, {432 + xShift, 316},
-        {448 + xShift, 276}, {448 + xShift, 292}, {448 + xShift, 308}, {448 + xShift, 324}
+        {500 + xShift, 300},
+        {516 + xShift, 292}, {516 + xShift, 308},
+        {532 + xShift, 284}, {532 + xShift, 300}, {532 + xShift, 316},
+        {548 + xShift, 276}, {548 + xShift, 292}, {548 + xShift, 308}, {548 + xShift, 324}
     };
 
     std::random_device rd;
@@ -39,20 +39,18 @@ int main() {
         particles.emplace_back(std::make_unique<Ball>(x, y, 0.0, 0.0, 1.0, 8.0, 0.9, color));
     }
 
-    particles.emplace_back(std::make_unique<LaunchableParticle>(200, 300, 1.0, 8.0, 0.9, sf::Color::White, 2000));
-
     // Generate cushions
     float cushionThickness = 8.0f;
 
     // Horizontal
-    obstacles.emplace_back(std::make_unique<SolidRectObstacle>(212.0, 108.0, 328.0, cushionThickness)); 
-    obstacles.emplace_back(std::make_unique<SolidRectObstacle>(588.0, 108.0, 328.0, cushionThickness)); 
-    obstacles.emplace_back(std::make_unique<SolidRectObstacle>(212.0, 492.0, 328.0, cushionThickness)); 
-    obstacles.emplace_back(std::make_unique<SolidRectObstacle>(588.0, 492.0, 328.0, cushionThickness));
+    obstacles.emplace_back(std::make_unique<SolidRectObstacle>(312.0, 108.0, 328.0, cushionThickness)); 
+    obstacles.emplace_back(std::make_unique<SolidRectObstacle>(688.0, 108.0, 328.0, cushionThickness)); 
+    obstacles.emplace_back(std::make_unique<SolidRectObstacle>(312.0, 492.0, 328.0, cushionThickness)); 
+    obstacles.emplace_back(std::make_unique<SolidRectObstacle>(688.0, 492.0, 328.0, cushionThickness));
 
     // Vertical
-    obstacles.emplace_back(std::make_unique<SolidRectObstacle>(28.0, 300.0, 344.0, cushionThickness, M_PI / 2)); 
-    obstacles.emplace_back(std::make_unique<SolidRectObstacle>(772.0, 300.0, 344.0, cushionThickness, M_PI / 2));
+    obstacles.emplace_back(std::make_unique<SolidRectObstacle>(128.0, 300.0, 344.0, cushionThickness, M_PI / 2)); 
+    obstacles.emplace_back(std::make_unique<SolidRectObstacle>(872.0, 300.0, 344.0, cushionThickness, M_PI / 2));
 
 
     // Pocket Jaws
@@ -67,45 +65,50 @@ int main() {
             sf::Color::White
         );
     };
-    obstacles.push_back(makeTriangle(40, 104, 48, 112, 48, 104));
-    obstacles.push_back(makeTriangle(376, 104, 376, 112, 384, 104));
-    obstacles.push_back(makeTriangle(416, 104, 424, 112, 424, 104));
-    obstacles.push_back(makeTriangle(752, 104, 752, 112, 760, 104));
+    obstacles.push_back(makeTriangle(140, 104, 148, 112, 148, 104));
+    obstacles.push_back(makeTriangle(476, 104, 476, 112, 484, 104));
+    obstacles.push_back(makeTriangle(516, 104, 524, 112, 524, 104));
+    obstacles.push_back(makeTriangle(852, 104, 852, 112, 860, 104));
 
-    obstacles.push_back(makeTriangle(40, 496, 48, 496, 48, 488));
-    obstacles.push_back(makeTriangle(376, 488, 376, 496, 384, 496));
-    obstacles.push_back(makeTriangle(416, 496, 424, 496, 424, 488));
-    obstacles.push_back(makeTriangle(752, 488, 752, 496, 760, 496));
+    obstacles.push_back(makeTriangle(140, 496, 148, 496, 148, 488));
+    obstacles.push_back(makeTriangle(476, 488, 476, 496, 484, 496));
+    obstacles.push_back(makeTriangle(516, 496, 524, 496, 524, 488));
+    obstacles.push_back(makeTriangle(852, 488, 852, 496, 860, 496));
 
-    obstacles.push_back(makeTriangle(24, 120, 24, 128, 32, 128));
-    obstacles.push_back(makeTriangle(24, 472, 24, 480, 32, 472));
+    obstacles.push_back(makeTriangle(124, 120, 124, 128, 132, 128));
+    obstacles.push_back(makeTriangle(124, 472, 124, 480, 132, 472));
 
-    obstacles.push_back(makeTriangle(776, 120, 768, 128, 776, 128));
-    obstacles.push_back(makeTriangle(768, 472, 776, 480, 776, 472));
+    obstacles.push_back(makeTriangle(876, 120, 868, 128, 876, 128));
+    obstacles.push_back(makeTriangle(868, 472, 876, 480, 876, 472));
 
     // Table
-    obstacles.push_back(std::make_unique<HollowRectObstacle>(400, 300, 792, 432, 20.0));
+    obstacles.push_back(std::make_unique<HollowRectObstacle>(500, 300, 792, 432, 20.0));
 
     // Pockets
     float pocketRadius = 16.0f;
 
-    obstacles.push_back(std::make_unique<Pocket>(24, 108.0 - 8.0/2.0, pocketRadius));
-    obstacles.push_back(std::make_unique<Pocket>(400.0, 108.0 - 8.0/2.0, pocketRadius));
-    obstacles.push_back(std::make_unique<Pocket>(772.0 + 8.0/2.0, 108.0 - 8.0/2.0, pocketRadius));
-    obstacles.push_back(std::make_unique<Pocket>(28.0 - 8.0/2.0, 492.0 + 8.0/2.0, pocketRadius));
-    obstacles.push_back(std::make_unique<Pocket>(400.0, 492.0 + 8.0/2.0, pocketRadius));
-    obstacles.push_back(std::make_unique<Pocket>(772.0 + 8.0/2.0, 492.0 + 8.0/2.0, pocketRadius));
+    obstacles.push_back(std::make_unique<Pocket>(124, 108.0 - 8.0/2.0, pocketRadius));
+    obstacles.push_back(std::make_unique<Pocket>(500.0, 108.0 - 8.0/2.0, pocketRadius));
+    obstacles.push_back(std::make_unique<Pocket>(872.0 + 8.0/2.0, 108.0 - 8.0/2.0, pocketRadius));
+    obstacles.push_back(std::make_unique<Pocket>(128.0 - 8.0/2.0, 492.0 + 8.0/2.0, pocketRadius));
+    obstacles.push_back(std::make_unique<Pocket>(500.0, 492.0 + 8.0/2.0, pocketRadius));
+    obstacles.push_back(std::make_unique<Pocket>(872.0 + 8.0/2.0, 492.0 + 8.0/2.0, pocketRadius));
 
     // Generate forcefields
     forcefields.push_back(std::make_unique<Forcefield>(
-        std::make_unique<RectArea>(400, 300, 736, 376, sf::Color(0, 102, 204)),
+        std::make_unique<RectArea>(500, 300, 736, 376, sf::Color(0, 102, 204)),
         std::make_unique<DragEffect>(0.28)
     ));
+
+    EventManager events{window};
+    auto particle = std::make_unique<LaunchableParticle>(300, 300, 1.0, 8.0, 0.9, sf::Color::White, 2000);
+    events.registerInteractive(particle.get());
+    particles.push_back(std::move(particle));
 
     SFMLRenderer renderer{window};
     PoolSimulator simulator{obstacles, particles, forcefields, windowWidth, windowHeight};
     
-    simulator.run(renderer);
+    simulator.run(renderer, events);
 
     return 0;
 }
