@@ -12,7 +12,7 @@ int main() {
     const unsigned int windowWidth = 1000;
     const unsigned int windowHeight = 600;
 
-    sf::RenderWindow window{sf::VideoMode{sf::Vector2u{windowWidth, windowHeight}}, "Physics Simulator"};
+    sf::RenderWindow window{sf::VideoMode{sf::Vector2u{windowWidth, windowHeight}}, "Pool"};
     std::vector<std::unique_ptr<Particle>> particles;
     std::vector<std::unique_ptr<Obstacle>> obstacles;
     std::vector<std::unique_ptr<Forcefield>> forcefields;
@@ -106,9 +106,10 @@ int main() {
     particles.push_back(std::move(particle));
 
     SFMLRenderer renderer{window};
+    ForceSystem fs;
     PoolSimulator simulator{obstacles, particles, forcefields, windowWidth, windowHeight};
     
-    simulator.run(renderer, events);
+    simulator.run(renderer, events, fs);
 
     return 0;
 }
