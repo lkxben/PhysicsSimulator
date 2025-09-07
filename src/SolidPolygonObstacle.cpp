@@ -2,11 +2,12 @@
 #include <cmath>
 #include <algorithm>
 
-SolidPolygonObstacle::SolidPolygonObstacle(const std::vector<sf::Vector2f>& verts, double elasticity_)
+SolidPolygonObstacle::SolidPolygonObstacle(const std::vector<sf::Vector2f>& verts, double elasticity_, sf::Color color_)
     : Obstacle(
         std::accumulate(verts.begin(), verts.end(), 0.0, [](double sum, const sf::Vector2f& v){ return sum + v.x; }) / verts.size(),
         std::accumulate(verts.begin(), verts.end(), 0.0, [](double sum, const sf::Vector2f& v){ return sum + v.y; }) / verts.size(),
-        elasticity_
+        elasticity_,
+        color_
       ),
       vertices(verts)
 {}
@@ -59,9 +60,9 @@ void SolidPolygonObstacle::draw(sf::RenderWindow& window) const {
             }
 
             if (!anyInside) {
-                va.append({vertices[i0], sf::Color(150,150,150)});
-                va.append({vertices[i1], sf::Color(150,150,150)});
-                va.append({vertices[i2], sf::Color(150,150,150)});
+                va.append({vertices[i0], color});
+                va.append({vertices[i1], color});
+                va.append({vertices[i2], color});
                 remaining.erase(remaining.begin() + i);
                 earFound = true;
                 break;

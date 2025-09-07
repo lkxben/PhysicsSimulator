@@ -1,11 +1,12 @@
 #include "HollowPolygonObstacle.h"
 #include <cmath>
 
-HollowPolygonObstacle::HollowPolygonObstacle(const std::vector<sf::Vector2f>& verts, double thickness_, double elasticity_)
+HollowPolygonObstacle::HollowPolygonObstacle(const std::vector<sf::Vector2f>& verts, double thickness_, double elasticity_, sf::Color color_)
     : Obstacle(
         std::accumulate(verts.begin(), verts.end(), 0.0, [](double sum, const sf::Vector2f& v){ return sum + v.x; }) / verts.size(),
         std::accumulate(verts.begin(), verts.end(), 0.0, [](double sum, const sf::Vector2f& v){ return sum + v.y; }) / verts.size(),
-        elasticity_
+        elasticity_,
+        color_
       ),
       vertices(verts),
       thickness(thickness_)
@@ -18,7 +19,7 @@ void HollowPolygonObstacle::draw(sf::RenderWindow& window) const {
         shape.setPoint(i, vertices[i]);
     shape.setFillColor(sf::Color::Transparent);
     shape.setOutlineThickness(static_cast<float>(thickness));
-    shape.setOutlineColor(sf::Color(150,150,150));
+    shape.setOutlineColor(color);
     window.draw(shape);
 }
 

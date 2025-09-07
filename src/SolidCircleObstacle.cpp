@@ -2,13 +2,14 @@
 #include <cmath>
 #include <algorithm>
 
-SolidCircleObstacle::SolidCircleObstacle(double x_, double y_, double radius_, double elasticity_)
-    : Obstacle(x_, y_, elasticity_), radius(radius_) {}
+SolidCircleObstacle::SolidCircleObstacle(double x_, double y_, double radius_, double elasticity_, sf::Color color_)
+    : Obstacle(x_, y_, elasticity_, color_), radius(radius_) {}
 
 void SolidCircleObstacle::draw(sf::RenderWindow& window) const {
     sf::CircleShape shape{static_cast<float>(radius), 30};
     shape.setPosition({static_cast<float>(x - radius),
                        static_cast<float>(y - radius)});
+    shape.setFillColor(color);
     window.draw(shape);
 }
 

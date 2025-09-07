@@ -8,7 +8,7 @@ struct HollowCircleObstacle : public Obstacle {
     double radius;
     double thickness;
 
-    HollowCircleObstacle(double x_, double y_, double radius_, double thickness_, double elasticity_ = 1.0);
+    HollowCircleObstacle(double x_, double y_, double radius_, double thickness_, double elasticity_ = 1.0, sf::Color color_ = sf::Color::White);
     virtual ~HollowCircleObstacle() = default;
 
     void draw(sf::RenderWindow& window) const override;

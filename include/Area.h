@@ -3,6 +3,10 @@
 #include "Particle.h"
 
 struct Area {
+    sf::Color color;
+
+    Area(sf::Color color_ = sf::Color::White) : color(color_) {};
+
     virtual bool contains(const Particle& p) const = 0;
     virtual void draw(sf::RenderWindow& window) const = 0;
     virtual ~Area() = default;
@@ -10,7 +14,7 @@ struct Area {
 
 struct CircleArea : Area {
     float x, y, radius;
-    CircleArea(float x_, float y_, float r_) : x(x_), y(y_), radius(r_) {}
+    CircleArea(float x_, float y_, float r_, sf::Color color_ = sf::Color::White) : Area(color_), x(x_), y(y_), radius(r_) {}
 
     bool contains(const Particle& p) const override {
         double dx = static_cast<double>(p.x) - static_cast<double>(x);
@@ -31,7 +35,7 @@ struct CircleArea : Area {
 
 struct RectArea : Area {
     float x, y, width, height;
-    RectArea(float x_, float y_, float w_, float h_) : x(x_), y(y_), width(w_), height(h_) {}
+    RectArea(float x_, float y_, float w_, float h_, sf::Color color_ = sf::Color::White) : Area(color_), x(x_), y(y_), width(w_), height(h_) {}
 
     bool contains(const Particle& p) const override {
         double halfW = static_cast<double>(width) / 2.0;
@@ -46,7 +50,7 @@ struct RectArea : Area {
         sf::RectangleShape rect(sf::Vector2f(width, height));
         rect.setOrigin({width / 2.f, height / 2.f}); 
         rect.setPosition({x, y});
-        rect.setFillColor(sf::Color::Blue);
+        rect.setFillColor(color);
         window.draw(rect);
     }
 };

@@ -10,7 +10,7 @@
 struct SolidPolygonObstacle : public Obstacle {
     std::vector<sf::Vector2f> vertices;
 
-    SolidPolygonObstacle(const std::vector<sf::Vector2f>& verts, double elasticity_ = 1.0);
+    SolidPolygonObstacle(const std::vector<sf::Vector2f>& verts, double elasticity_ = 1.0, sf::Color color_ = sf::Color::White);
     virtual ~SolidPolygonObstacle() = default;
 
     void draw(sf::RenderWindow& window) const override;

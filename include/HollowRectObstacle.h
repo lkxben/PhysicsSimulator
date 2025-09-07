@@ -10,7 +10,7 @@ struct HollowRectObstacle : public Obstacle {
     double thickness;
     double rotation;
 
-    HollowRectObstacle(double x_, double y_, double width_, double height_, double thickness_ = 1.0, double rotation_ = 0.0, double elasticity_ = 1.0);
+    HollowRectObstacle(double x_, double y_, double width_, double height_, double thickness_ = 1.0, double rotation_ = 0.0, double elasticity_ = 1.0, sf::Color color_ = sf::Color::White);
     virtual ~HollowRectObstacle() = default;
 
     void draw(sf::RenderWindow& window) const override;

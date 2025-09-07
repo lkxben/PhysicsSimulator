@@ -9,13 +9,13 @@
 #include "HollowCircleObstacle.h"
 #include "SolidPolygonObstacle.h"
 #include "HollowPolygonObstacle.h"
+#include "LaunchableParticle.h"
 #include "Forcefield.h"
 
 class Renderer {
 public:
     virtual void draw(const std::vector<std::unique_ptr<Particle>>& particles, const std::vector<std::unique_ptr<Obstacle>>& obstacless, const std::vector<std::unique_ptr<Forcefield>>& forcefields) = 0;
     virtual bool isRunning() const = 0;
-    virtual void pollEvents() = 0; 
 };
 
 class SFMLRenderer : public Renderer {
@@ -42,11 +42,5 @@ public:
 
     bool isRunning() const override {
         return window.isOpen();
-    }
-
-    void pollEvents() override {
-        auto eventOpt = window.pollEvent();
-        sf::Event event = *eventOpt; 
-        if (event.is<sf::Event::Closed>()) { window.close(); }
     }
 };
