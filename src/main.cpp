@@ -5,50 +5,72 @@
 #include "../include/Simulator.h"
 #include "../include/EventManager.h"
 #include "../include/ForceSystem.h"
+#include "../include/ConstraintSystem.h"
+#include "../include/DistanceConstraint.h"
+#include "../include/FixedPointConstraint.h"
 
 int main() {
     // Set up window
     const unsigned int windowWidth = 800;
-    const unsigned int windowHeight = 600;
+    const unsigned int windowHeight = 1000;
 
     sf::RenderWindow window{sf::VideoMode{sf::Vector2u{windowWidth, windowHeight}}, "Main"};
     std::vector<std::unique_ptr<Particle>> particles;
     std::vector<std::unique_ptr<Obstacle>> obstacles;
     std::vector<std::unique_ptr<Forcefield>> forcefields;
     ForceSystem fs;
+    ConstraintSystem cs;
 
-    fs.addForce(Force::electric(1000));
+    // Pivot particle (fixed)
+    auto pivot = std::make_unique<Particle>(ParticleParams{
+        .x = 400.0,
+        .y = 500.0,
+        .radius = 5.0,
+        .color = sf::Color::Yellow
+    });
 
-    std::mt19937 rng(std::random_device{}());
-    std::uniform_real_distribution<double> distX(100.0, 700.0);
-    std::uniform_real_distribution<double> distY(100.0, 500.0);
-    std::uniform_real_distribution<double> distV(-10.0, 10.0);
+    // First bob (middle)
+    auto middle = std::make_unique<Particle>(ParticleParams{
+        .x = 400.0,        
+        .y = 400.0,
+        .mass = 50.0,
+        .radius = 15.0,
+        .color = sf::Color::Red,
+        .vx = 0.0
+    });
 
-    int numParticles = 100;
+    // Second bob (end)
+    auto end = std::make_unique<Particle>(ParticleParams{
+        .x = 400.0,
+        .y = 250.0,
+        .mass = 20.0,
+        .radius = 10.0,
+        .color = sf::Color::Blue,
+        .vx = 200.0
+    });
 
-    for (int i = 0; i < numParticles; i++) {
-        bool isProton = (i % 3 == 0);  
-        double charge = isProton ? +5.0 : -5.0;
-        double mass   = isProton ? 20.0 : 1.0;
-        sf::Color color = isProton ? sf::Color::Red : sf::Color::Blue;
+    Particle* pivotPtr = pivot.get();
+    Particle* middlePtr = middle.get();
+    Particle* endPtr = end.get();
 
-        particles.emplace_back(std::make_unique<Particle>(ParticleParams{
-            .x = distX(rng),
-            .y = distY(rng),
-            .vx = distV(rng),
-            .vy = distV(rng),
-            .mass = mass,
-            .radius = isProton ? 4.0f : 2.0f,
-            .charge = charge,
-            .color = color
-        }));
-    }
+    particles.push_back(std::move(pivot));
+    particles.push_back(std::move(middle));
+    particles.push_back(std::move(end));
+
+    cs.addConstraint(std::make_unique<DistanceConstraint>(pivotPtr, middlePtr, 100.0));
+    cs.addConstraint(std::make_unique<DistanceConstraint>(middlePtr, endPtr, 150.0));
+    cs.addConstraint(std::make_unique<FixedPointConstraint>(pivotPtr, 400, 500));
+
+    forcefields.push_back(std::make_unique<Forcefield>(
+        std::make_unique<RectArea>(400, 300, 800, 600, sf::Color::Black),
+        std::make_unique<GravityEffect>(50)
+    ));
 
     SFMLRenderer renderer{window};
     Simulator simulator{obstacles, particles, forcefields, windowWidth, windowHeight};
     EventManager events{window};
 
-    simulator.run(renderer, events, fs);
+    simulator.run(renderer, events, fs, cs);
 
     return 0;
 }

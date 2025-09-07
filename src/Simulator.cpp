@@ -98,7 +98,7 @@ void Simulator::update(double dt) {
     }
 }
 
-void Simulator::run(Renderer& renderer, EventManager& events, ForceSystem& fs) {
+void Simulator::run(Renderer& renderer, EventManager& events, ForceSystem& fs, ConstraintSystem& cs) {
     sf::Clock clock;
 
     while (renderer.isRunning()) {
@@ -106,6 +106,7 @@ void Simulator::run(Renderer& renderer, EventManager& events, ForceSystem& fs) {
         double dt = clock.restart().asSeconds();
         fs.apply(particles, dt);
         update(dt);
+        cs.applyAll(dt);
         renderer.draw(particles, obstacles, forcefields);
     }
 }

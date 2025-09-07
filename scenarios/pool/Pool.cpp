@@ -108,8 +108,9 @@ int main() {
     SFMLRenderer renderer{window};
     ForceSystem fs;
     PoolSimulator simulator{obstacles, particles, forcefields, windowWidth, windowHeight};
+    ConstraintSystem cs;
     
-    simulator.run(renderer, events, fs);
+    simulator.run(renderer, events, fs, cs);
 
     return 0;
 }

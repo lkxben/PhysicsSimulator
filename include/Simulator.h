@@ -7,6 +7,7 @@
 #include "Forcefield.h"
 #include "EventManager.h"
 #include "ForceSystem.h"
+#include "ConstraintSystem.h"
 
 class Simulator {
 protected:
@@ -24,7 +25,7 @@ public:
 
     virtual void update(double dt);
 
-    void run(Renderer& renderer, EventManager& events, ForceSystem& fs);
+    void run(Renderer& renderer, EventManager& events, ForceSystem& fs, ConstraintSystem& cs);
 
     virtual ~Simulator() = default;
 };

@@ -47,8 +47,9 @@ int main() {
     SFMLRenderer renderer{window};
     Simulator simulator{obstacles, particles, forcefields, windowWidth, windowHeight};
     EventManager events{window};
+    ConstraintSystem cs;
 
-    simulator.run(renderer, events, fs);
+    simulator.run(renderer, events, fs, cs);
 
     return 0;
 }
