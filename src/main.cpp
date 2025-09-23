@@ -9,6 +9,7 @@
 #include "../include/ConstraintSystem.h"
 #include "../include/MaxDistanceConstraint.h"
 #include "../include/FixedPointConstraint.h"
+#include "../include/MovableFixedPointConstraint.h"
 #include "../include/RenderSystem.h"
 #include "../include/IntegratorSystem.h"
 
@@ -60,8 +61,8 @@ int main() {
     }
 
     // Fixed points
-    world.constraints.push_back(std::make_unique<FixedPointConstraint>(grid[0][0], grid[0][0]->x, grid[0][0]->y));
-    // world.constraints.push_back(std::make_unique<FixedPointConstraint>(grid[rows-1][0], grid[rows-1][0]->x, grid[rows-1][0]->y - 50));
+    // world.constraints.push_back(std::make_unique<FixedPointConstraint>(grid[0][0], grid[0][0]->x, grid[0][0]->y));
+    // world.constraints.push_back(std::make_unique<MovableFixedPointConstraint>(grid[rows-1][0], grid[rows-1][0]->x, grid[rows-1][0]->y - 50));
 
     // Forcefields
     // world.forcefields.push_back(std::make_unique<Forcefield>(
@@ -71,17 +72,36 @@ int main() {
 
     world.forcefields.push_back(std::make_unique<Forcefield>(
         std::make_unique<RectArea>(0, 0, windowWidth, windowHeight, sf::Color::Black),
-        std::make_unique<GravityEffect>(50)
+        std::make_unique<GravityEffect>(1000)
+    ));
+
+    world.forcefields.push_back(std::make_unique<Forcefield>(
+        std::make_unique<RectArea>(0, 0, windowWidth, windowHeight, sf::Color::Black),
+        std::make_unique<DragEffect>(20)
     ));
 
     // Systems
     Simulator simulator;
-    simulator.addSystem(std::make_unique<IntegratorSystem>(true, windowWidth, windowHeight));
+    simulator.addSystem(std::make_unique<IntegratorSystem>());
     simulator.addSystem(std::make_unique<ForcefieldSystem>());
     simulator.addSystem(std::make_unique<ConstraintSystem>());
     simulator.addSystem(std::make_unique<RenderSystem>(window));
 
     EventManager events{window};
+    {
+        auto movable = std::make_unique<MovableFixedPointConstraint>(
+            grid[0][0], grid[0][0]->x, grid[0][0]->y
+        );
+        events.registerInteractive(movable.get());
+        world.constraints.push_back(std::move(movable));
+    }
+    {
+        auto movable = std::make_unique<MovableFixedPointConstraint>(
+            grid[0][cols - 1], grid[0][cols - 1]->x, grid[0][cols - 1]->y
+        );
+        events.registerInteractive(movable.get());
+        world.constraints.push_back(std::move(movable));
+    }
 
     simulator.run(world, events);
 
