@@ -1,4 +1,6 @@
 #pragma once
+#include <random>
+#include <chrono>
 #include "Particle.h"
 
 struct Effect {
@@ -38,5 +40,55 @@ struct OscillatingForceEffect : Effect {
         double force = amplitude * std::sin(omega * elapsed);
         p.vx += force * directionX * dt;
         p.vy += force * directionY * dt;
+    }
+};
+
+struct FlagWindEffect : Effect {
+    double directionX;
+    double directionY;
+    double minStrength;
+    double maxStrength;
+    mutable double currentStrength;
+    mutable double targetStrength;
+    mutable double changeSpeed;
+    mutable std::mt19937 rng;
+    mutable std::uniform_real_distribution<double> durationDist;
+    mutable std::uniform_real_distribution<double> strengthDist;
+    mutable double timer;
+    mutable double nextSwitch;
+
+    FlagWindEffect(double dirX, double dirY, double minS = 0.0, double maxS = 200.0)
+        : directionX(dirX), directionY(dirY),
+          minStrength(minS), maxStrength(maxS),
+          currentStrength(minS), targetStrength(maxS),
+          timer(0.0), nextSwitch(0.0),
+          rng(std::random_device{}()),
+          durationDist(0.3, 1.0),
+          strengthDist(minS, maxS)
+    {
+        nextSwitch = durationDist(rng);
+        targetStrength = strengthDist(rng);
+        changeSpeed = (targetStrength - currentStrength) / nextSwitch;
+    }
+
+    void apply(Particle& p, double dt) const override {
+        timer += dt;
+
+        // smooth interpolation
+        currentStrength += changeSpeed * dt;
+
+        if ((changeSpeed > 0 && currentStrength >= targetStrength) ||
+            (changeSpeed < 0 && currentStrength <= targetStrength) ||
+            timer >= nextSwitch)
+        {
+            // new gust target
+            timer = 0.0;
+            nextSwitch = durationDist(rng);
+            targetStrength = strengthDist(rng);
+            changeSpeed = (targetStrength - currentStrength) / nextSwitch;
+        }
+
+        p.vx += currentStrength * directionX * dt;
+        p.vy += currentStrength * directionY * dt;
     }
 };
