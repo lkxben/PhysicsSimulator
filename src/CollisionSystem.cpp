@@ -42,13 +42,6 @@ void CollisionSystem::update(World& world, double dt) {
     for (size_t i = 0; i < world.particles.size(); ++i) {
         Particle* p1 = world.particles[i].get();
 
-        // Boundary collisions
-        if (p1->x - p1->radius < 0) { p1->vx = -p1->vx; p1->x = p1->radius; }
-        else if (p1->x + p1->radius > width) { p1->vx = -p1->vx; p1->x = width - p1->radius; }
-
-        if (p1->y - p1->radius < 0) { p1->vy = -p1->vy; p1->y = p1->radius; }
-        else if (p1->y + p1->radius > height) { p1->vy = -p1->vy; p1->y = height - p1->radius; }
-
         int row = static_cast<int>(p1->y / cellSize);
         int col = static_cast<int>(p1->x / cellSize);
         row = std::clamp(row, 0, rows - 1);

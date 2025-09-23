@@ -76,7 +76,7 @@ int main() {
 
     // Systems
     Simulator simulator;
-    simulator.addSystem(std::make_unique<IntegratorSystem>());
+    simulator.addSystem(std::make_unique<IntegratorSystem>(true, windowWidth, windowHeight));
     simulator.addSystem(std::make_unique<ForcefieldSystem>());
     simulator.addSystem(std::make_unique<ConstraintSystem>());
     simulator.addSystem(std::make_unique<RenderSystem>(window));

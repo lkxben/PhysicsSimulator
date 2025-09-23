@@ -49,7 +49,7 @@ int main() {
     forceSystem->addForce(Force::electric(1000));
 
     Simulator simulator;
-    simulator.addSystem(std::make_unique<IntegratorSystem>());
+    simulator.addSystem(std::make_unique<IntegratorSystem>(true, windowWidth, windowHeight));
     simulator.addSystem(std::make_unique<CollisionSystem>(world, windowWidth, windowHeight));
     simulator.addSystem(std::move(forceSystem));
     simulator.addSystem(std::make_unique<RenderSystem>(window));
