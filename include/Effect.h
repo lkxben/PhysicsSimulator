@@ -22,3 +22,21 @@ struct GravityEffect : Effect {
         p.vy += g * dt;
     }
 };
+
+struct OscillatingForceEffect : Effect {
+    double amplitude;
+    double omega;
+    double directionX;
+    double directionY;
+    mutable double elapsed = 0.0;
+
+    OscillatingForceEffect(double amplitude_, double freqHz, double dirX, double dirY)
+        : amplitude(amplitude_), omega(2.0 * M_PI * freqHz), directionX(dirX), directionY(dirY) {}
+
+    void apply(Particle& p, double dt) const override {
+        elapsed += dt;
+        double force = amplitude * std::sin(omega * elapsed);
+        p.vx += force * directionX * dt;
+        p.vy += force * directionY * dt;
+    }
+};
