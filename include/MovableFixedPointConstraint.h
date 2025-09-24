@@ -22,7 +22,7 @@ struct MovableFixedPointConstraint : public FixedPointConstraint, public Interac
             if (!isDragging && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
                 float dx = mousePos.x - fx;
                 float dy = mousePos.y - fy;
-                if (dx*dx + dy*dy <= 100.f) { // grab radius ~10px
+                if (dx*dx + dy*dy <= 100.f) {
                     isDragging = true;
                     dragStart = mousePos;
                     dragCurrent = mousePos;

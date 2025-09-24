@@ -32,8 +32,7 @@ struct MaxDistanceConstraint : Constraint {
         line[1].color = color;
 
         window.draw(line);
-    }
-
+    }   
 
     void apply(double dt) override {
         double dx = b->x - a->x;
@@ -47,13 +46,21 @@ struct MaxDistanceConstraint : Constraint {
         double invMassB = (b->mass > 0) ? 1.0 / b->mass : 0.0;
         double invMassSum = invMassA + invMassB;
         if (invMassSum == 0) return;
-        
+
         double correctionX = diff * dx;
         double correctionY = diff * dy;
+
+        // Update positions
         a->x += correctionX * (invMassA / invMassSum);
         a->y += correctionY * (invMassA / invMassSum);
         b->x -= correctionX * (invMassB / invMassSum);
         b->y -= correctionY * (invMassB / invMassSum);
+
+        // Update previous positions to preserve velocity for Verlet
+        a->px += correctionX * (invMassA / invMassSum);
+        a->py += correctionY * (invMassA / invMassSum);
+        b->px -= correctionX * (invMassB / invMassSum);
+        b->py -= correctionY * (invMassB / invMassSum);
 
         double relVx = b->vx - a->vx;
         double relVy = b->vy - a->vy;

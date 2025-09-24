@@ -1,17 +1,20 @@
 #pragma once
 #include "System.h"
 
-struct IntegratorSystem : public System {
+struct EulerIntegratorSystem : public System {
     bool enforceBoundaries;
     double width;
     double height;
 
-    IntegratorSystem(bool enforce = false, double w = 0.0, double h = 0.0)
+    EulerIntegratorSystem(bool enforce = false, double w = 0.0, double h = 0.0)
         : enforceBoundaries(enforce), width(w), height(h) {}
 
     void update(World& world, double dt) override {
         for (auto& p : world.particles) {
-            p->move(dt);
+            p->vx += p->ax * dt;
+            p->vy += p->ay * dt;
+            p->x  += p->vx * dt;
+            p->y  += p->vy * dt;
             if (!enforceBoundaries) continue;
 
             if (p->x - p->radius < 0.0) {

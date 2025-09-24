@@ -10,7 +10,7 @@
 #include "../include/DistanceConstraint.h"
 #include "../include/FixedPointConstraint.h"
 #include "../include/RenderSystem.h"
-#include "../include/IntegratorSystem.h"
+#include "../include/EulerIntegratorSystem.h"
 
 int main() {
     const unsigned int windowWidth = 800;
@@ -55,7 +55,7 @@ int main() {
 
     // Simulator and systems
     Simulator simulator;
-    simulator.addSystem(std::make_unique<IntegratorSystem>(true, windowWidth, windowHeight));
+    simulator.addSystem(std::make_unique<EulerIntegratorSystem>(true, windowWidth, windowHeight));
     simulator.addSystem(std::make_unique<ForcefieldSystem>());
     simulator.addSystem(std::make_unique<ConstraintSystem>());
     simulator.addSystem(std::make_unique<RenderSystem>(window));

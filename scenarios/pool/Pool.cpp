@@ -10,7 +10,7 @@
 #include "../include/ConstraintSystem.h"
 #include "../include/CollisionSystem.h"
 #include "../include/RenderSystem.h"
-#include "../include/IntegratorSystem.h"
+#include "../include/EulerIntegratorSystem.h"
 #include "Ball.h"
 #include "Pocket.h"
 
@@ -98,7 +98,7 @@ int main() {
 
     // Systems
     Simulator simulator;
-    simulator.addSystem(std::make_unique<IntegratorSystem>());
+    simulator.addSystem(std::make_unique<EulerIntegratorSystem>());
     simulator.addSystem(std::make_unique<CollisionSystem>(world, windowWidth, windowHeight));
     simulator.addSystem(std::make_unique<ForcefieldSystem>());
     simulator.addSystem(std::make_unique<ConstraintSystem>());

@@ -10,8 +10,10 @@
 #include "../include/MaxDistanceConstraint.h"
 #include "../include/FixedPointConstraint.h"
 #include "../include/MovableFixedPointConstraint.h"
+#include "../include/ElasticDistanceConstraint.h"
 #include "../include/RenderSystem.h"
-#include "../include/IntegratorSystem.h"
+#include "../include/EulerIntegratorSystem.h"
+#include "../include/VerletIntegratorSystem.h"
 
 int main() {
     const unsigned int windowWidth = 800;
@@ -82,7 +84,8 @@ int main() {
 
     // Systems
     Simulator simulator;
-    simulator.addSystem(std::make_unique<IntegratorSystem>());
+    simulator.addSystem(std::make_unique<VerletIntegratorSystem>());
+    // simulator.addSystem(std::make_unique<EulerIntegratorSystem>());
     simulator.addSystem(std::make_unique<ForcefieldSystem>());
     simulator.addSystem(std::make_unique<ConstraintSystem>());
     simulator.addSystem(std::make_unique<RenderSystem>(window));

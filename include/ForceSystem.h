@@ -14,10 +14,10 @@ public:
     }
 
     void update(World& world, double dt) override {
-        // Reset forces
+        // Reset accelerations
         for (auto& p : world.particles) {
-            p->fx = 0.0;
-            p->fy = 0.0;
+            p->ax = 0.0;
+            p->ay = 0.0;
         }
 
         // Apply inter-particle forces
@@ -28,12 +28,5 @@ public:
                 }
             }
         }
-
-        // Integrate velocities
-        for (auto& p : world.particles) {
-            p->vx += (p->fx / p->mass) * dt;
-            p->vy += (p->fy / p->mass) * dt;
-        }
     }
 };
-

@@ -10,7 +10,7 @@
 #include "../include/ConstraintSystem.h"
 #include "../include/CollisionSystem.h"
 #include "../include/RenderSystem.h"
-#include "../include/IntegratorSystem.h"
+#include "../include/EulerIntegratorSystem.h"
 
 int main() {
     const unsigned int windowWidth = 800;
@@ -56,7 +56,7 @@ int main() {
 
     // Set up simulator
     Simulator simulator;
-    simulator.addSystem(std::make_unique<IntegratorSystem>(true, windowWidth, windowHeight));
+    simulator.addSystem(std::make_unique<EulerIntegratorSystem>(true, windowWidth, windowHeight));
     simulator.addSystem(std::make_unique<CollisionSystem>(world, windowWidth, windowHeight));
     simulator.addSystem(std::move(forceSystem));
     simulator.addSystem(std::make_unique<RenderSystem>(window));
