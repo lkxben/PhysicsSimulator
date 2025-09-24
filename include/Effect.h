@@ -14,6 +14,11 @@ struct DragEffect : Effect {
     void apply(Particle& p, double dt) const override {
         p.vx -= p.vx * k * dt;
         p.vy -= p.vy * k * dt;
+
+        double dx = p.x - p.px;
+        double dy = p.y - p.py;
+        p.px = p.x - dx * (1.0 - k*dt);
+        p.py = p.y - dy * (1.0 - k*dt);
     }
 };
 
@@ -22,6 +27,8 @@ struct GravityEffect : Effect {
     GravityEffect(double g_) : g(g_) {}
     void apply(Particle& p, double dt) const override {
         p.vy += g * dt;
+
+        p.py -= g * dt * dt;
     }
 };
 
@@ -40,6 +47,9 @@ struct OscillatingForceEffect : Effect {
         double force = amplitude * std::sin(omega * elapsed);
         p.vx += force * directionX * dt;
         p.vy += force * directionY * dt;
+
+        p.px -= force * directionX * dt * dt;
+        p.py -= force * directionY * dt * dt;
     }
 };
 
@@ -90,5 +100,8 @@ struct FlagWindEffect : Effect {
 
         p.vx += currentStrength * directionX * dt;
         p.vy += currentStrength * directionY * dt;
+
+        p.px -= currentStrength * directionX * dt * dt;
+        p.py -= currentStrength * directionY * dt * dt;
     }
 };

@@ -34,46 +34,61 @@ struct MaxDistanceConstraint : Constraint {
         window.draw(line);
     }   
 
-    void apply(double dt) override {
+    void apply(double dt, int iterations, IntegratorType integrator) override {
         double dx = b->x - a->x;
         double dy = b->y - a->y;
         double dist = std::sqrt(dx*dx + dy*dy);
         if (dist < 1e-6 || dist <= maxLength) return;
 
-        double diff = (dist - maxLength) / dist;
-
-        double invMassA = (a->mass > 0) ? 1.0 / a->mass : 0.0;
-        double invMassB = (b->mass > 0) ? 1.0 / b->mass : 0.0;
+        double invMassA = (a->mass > 0 ? 1.0 / a->mass : 0.0);
+        double invMassB = (b->mass > 0 ? 1.0 / b->mass : 0.0);
         double invMassSum = invMassA + invMassB;
         if (invMassSum == 0) return;
 
-        double correctionX = diff * dx;
-        double correctionY = diff * dy;
+        if (integrator == IntegratorType::Euler) {
+            double diff = (dist - maxLength) / dist;
+            double correctionX = diff * dx;
+            double correctionY = diff * dy;
 
-        // Update positions
-        a->x += correctionX * (invMassA / invMassSum);
-        a->y += correctionY * (invMassA / invMassSum);
-        b->x -= correctionX * (invMassB / invMassSum);
-        b->y -= correctionY * (invMassB / invMassSum);
+            a->x += correctionX * (invMassA / invMassSum);
+            a->y += correctionY * (invMassA / invMassSum);
+            b->x -= correctionX * (invMassB / invMassSum);
+            b->y -= correctionY * (invMassB / invMassSum);
 
-        // Update previous positions to preserve velocity for Verlet
-        a->px += correctionX * (invMassA / invMassSum);
-        a->py += correctionY * (invMassA / invMassSum);
-        b->px -= correctionX * (invMassB / invMassSum);
-        b->py -= correctionY * (invMassB / invMassSum);
+            double relVx = b->vx - a->vx;
+            double relVy = b->vy - a->vy;
 
-        double relVx = b->vx - a->vx;
-        double relVy = b->vy - a->vy;
+            double dot = relVx * dx + relVy * dy;
+            double k = dot / (dist * dist);
 
-        double dot = relVx * dx + relVy * dy;
-        double k = dot / (dist * dist);
+            double vxCorrection = k * dx;
+            double vyCorrection = k * dy;
 
-        double vxCorrection = k * dx;
-        double vyCorrection = k * dy;
+            a->vx += vxCorrection * invMassA / invMassSum;
+            a->vy += vyCorrection * invMassA / invMassSum;
+            b->vx -= vxCorrection * invMassB / invMassSum;
+            b->vy -= vyCorrection * invMassB / invMassSum;
 
-        a->vx += vxCorrection * invMassA / invMassSum;
-        a->vy += vyCorrection * invMassA / invMassSum;
-        b->vx -= vxCorrection * invMassB / invMassSum;
-        b->vy -= vyCorrection * invMassB / invMassSum;
+        } else if (integrator == IntegratorType::Verlet) {
+            double k_iter = 1.0 / iterations;
+            double diff = (dist - maxLength) / dist * k_iter;
+
+            double correctionX = diff * dx;
+            double correctionY = diff * dy;
+
+            a->x += correctionX * (invMassA / invMassSum);
+            a->y += correctionY * (invMassA / invMassSum);
+            b->x -= correctionX * (invMassB / invMassSum);
+            b->y -= correctionY * (invMassB / invMassSum);
+
+            if (invMassA > 0) {
+                a->px += correctionX * 0.05;
+                a->py += correctionY * 0.05;
+            }
+            if (invMassB > 0) {
+                b->px -= correctionX * 0.05;
+                b->py -= correctionY * 0.05;
+            }
+        }
     }
 };

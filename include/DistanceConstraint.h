@@ -35,7 +35,7 @@ struct DistanceConstraint : Constraint {
     }
 
 
-    void apply(double dt) override {
+    void apply(double dt, int iterations, IntegratorType integrator) override {
         double dx = b->x - a->x;
         double dy = b->y - a->y;
         double dist = std::sqrt(dx*dx + dy*dy);

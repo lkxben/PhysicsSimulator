@@ -6,10 +6,11 @@ struct ElasticDistanceConstraint : Constraint {
     Particle* a;
     Particle* b;
     double restLength;
+    double k;
     sf::Color color;
 
-    ElasticDistanceConstraint(Particle* a_, Particle* b_, double length_, sf::Color color_ = sf::Color::White)
-        : a(a_), b(b_), restLength(length_), color(color_) {}
+    ElasticDistanceConstraint(Particle* a_, Particle* b_, double length_, double k_ = 0.05, sf::Color color_ = sf::Color::White)
+        : a(a_), b(b_), restLength(length_), k(k_), color(color_) {}
 
     void draw(sf::RenderWindow& window) const override {
         float dx = static_cast<float>(b->x - a->x);
@@ -34,39 +35,37 @@ struct ElasticDistanceConstraint : Constraint {
         window.draw(line);
     }
 
-
-void apply(double dt) override {
+    void apply(double dt, int iterations, IntegratorType integrator) override {
     double dx = b->x - a->x;
     double dy = b->y - a->y;
     double dist = std::sqrt(dx*dx + dy*dy);
     if (dist < 1e-6) return;
 
-    // Hooke's law: F = -k * (dist - restLength)
-    double stiffness = 50.0;  // spring constant, tweak for desired elasticity
-    double damping   = 0.1;   // optional damping
-    double forceMag = stiffness * (dist - restLength);
+    double invMassA = (a->mass > 0 ? 1.0 / a->mass : 0.0);
+    double invMassB = (b->mass > 0 ? 1.0 / b->mass : 0.0);
+    if (invMassA + invMassB == 0) return;
 
+    // Spring force
+    double forceMag = k * (dist - restLength);
     double fx = forceMag * dx / dist;
     double fy = forceMag * dy / dist;
 
-    double invMassA = (a->mass > 0) ? 1.0 / a->mass : 0.0;
-    double invMassB = (b->mass > 0) ? 1.0 / b->mass : 0.0;
-
-    // --- Euler: apply as acceleration/velocity change ---
+    // Apply accelerations
     a->ax += fx * invMassA;
     a->ay += fy * invMassA;
     b->ax -= fx * invMassB;
     b->ay -= fy * invMassB;
 
-    // --- Verlet: optional damping along relative velocity ---
-    double relVx = (b->x - b->px)/dt - (a->x - a->px)/dt;
-    double relVy = (b->y - b->py)/dt - (a->y - a->py)/dt;
-    double dampingForceX = relVx * damping;
-    double dampingForceY = relVy * damping;
+    // Update velocities
+    a->vx += a->ax * dt;
+    a->vy += a->ay * dt;
+    b->vx += b->ax * dt;
+    b->vy += b->ay * dt;
 
-    a->px += dampingForceX * invMassA * dt;
-    a->py += dampingForceY * invMassA * dt;
-    b->px -= dampingForceX * invMassB * dt;
-    b->py -= dampingForceY * invMassB * dt;
+    // Optionally reset acceleration for next frame
+    a->ax = 0;
+    a->ay = 0;
+    b->ax = 0;
+    b->ay = 0;
 }
 };

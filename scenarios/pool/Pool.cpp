@@ -101,7 +101,6 @@ int main() {
     simulator.addSystem(std::make_unique<EulerIntegratorSystem>());
     simulator.addSystem(std::make_unique<CollisionSystem>(world, windowWidth, windowHeight));
     simulator.addSystem(std::make_unique<ForcefieldSystem>());
-    simulator.addSystem(std::make_unique<ConstraintSystem>());
     simulator.addSystem(std::make_unique<RenderSystem>(window));
 
     // Run simulation

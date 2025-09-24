@@ -55,31 +55,22 @@ int main() {
             if (i < rows - 1)
                 world.constraints.push_back(std::make_unique<MaxDistanceConstraint>(p, grid[i+1][j], spacing));
 
-            if (i < rows - 1 && j < cols - 1) {
-                world.constraints.push_back(std::make_unique<MaxDistanceConstraint>(p, grid[i+1][j+1], spacing * 1.414));
-                world.constraints.push_back(std::make_unique<MaxDistanceConstraint>(grid[i+1][j], grid[i][j+1], spacing * 1.414));
-            }
+            // if (i < rows - 1 && j < cols - 1) {
+            //     world.constraints.push_back(std::make_unique<ElasticDistanceConstraint>(p, grid[i+1][j+1], spacing * 1.414));
+            //     world.constraints.push_back(std::make_unique<ElasticDistanceConstraint>(grid[i+1][j], grid[i][j+1], spacing * 1.414));
+            // }
         }
     }
 
-    // Fixed points
-    // world.constraints.push_back(std::make_unique<FixedPointConstraint>(grid[0][0], grid[0][0]->x, grid[0][0]->y));
-    // world.constraints.push_back(std::make_unique<MovableFixedPointConstraint>(grid[rows-1][0], grid[rows-1][0]->x, grid[rows-1][0]->y - 50));
-
     // Forcefields
-    // world.forcefields.push_back(std::make_unique<Forcefield>(
-    //     std::make_unique<RectArea>(0, 0, windowWidth, windowHeight, sf::Color::Black),
-    //     std::make_unique<FlagWindEffect>(1.0, 0.0)
-    // ));
-
     world.forcefields.push_back(std::make_unique<Forcefield>(
-        std::make_unique<RectArea>(0, 0, windowWidth, windowHeight, sf::Color::Black),
-        std::make_unique<GravityEffect>(1000)
+        std::make_unique<RectArea>(windowWidth / 2, windowHeight / 2, windowWidth, windowHeight, sf::Color::Black),
+        std::make_unique<GravityEffect>(100)
     ));
 
     world.forcefields.push_back(std::make_unique<Forcefield>(
-        std::make_unique<RectArea>(0, 0, windowWidth, windowHeight, sf::Color::Black),
-        std::make_unique<DragEffect>(20)
+        std::make_unique<RectArea>(windowWidth / 2, windowHeight / 2, windowWidth, windowHeight, sf::Color::Black),
+        std::make_unique<DragEffect>(1)
     ));
 
     // Systems
@@ -87,7 +78,8 @@ int main() {
     simulator.addSystem(std::make_unique<VerletIntegratorSystem>());
     // simulator.addSystem(std::make_unique<EulerIntegratorSystem>());
     simulator.addSystem(std::make_unique<ForcefieldSystem>());
-    simulator.addSystem(std::make_unique<ConstraintSystem>());
+    simulator.addSystem(std::make_unique<ConstraintSystem>(IntegratorType::Verlet));
+    // simulator.addSystem(std::make_unique<ConstraintSystem>(IntegratorType::Euler));
     simulator.addSystem(std::make_unique<RenderSystem>(window));
 
     EventManager events{window};

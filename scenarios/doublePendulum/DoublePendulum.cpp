@@ -57,7 +57,7 @@ int main() {
     Simulator simulator;
     simulator.addSystem(std::make_unique<EulerIntegratorSystem>(true, windowWidth, windowHeight));
     simulator.addSystem(std::make_unique<ForcefieldSystem>());
-    simulator.addSystem(std::make_unique<ConstraintSystem>());
+    simulator.addSystem(std::make_unique<ConstraintSystem>(IntegratorType::Euler));
     simulator.addSystem(std::make_unique<RenderSystem>(window));
 
     EventManager events{window};

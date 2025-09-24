@@ -9,9 +9,11 @@ struct FixedPointConstraint : Constraint {
     FixedPointConstraint(Particle* particle, double x, double y)
         : p(particle), fx(x), fy(y) {}
 
-    void apply(double dt) override {
+    void apply(double dt, int iterations, IntegratorType integrator) override {
         p->x = fx;
         p->y = fy;
+        p->px = fx;
+        p->py = fy;
         p->vx = 0;
         p->vy = 0;
     }
