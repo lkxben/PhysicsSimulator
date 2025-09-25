@@ -13,6 +13,10 @@ struct ElasticDistanceConstraint : Constraint {
     ElasticDistanceConstraint(Particle* a_, Particle* b_, double restLength_, double maxLength_, double k_ = 0.01, sf::Color color_ = sf::Color::White)
         : a(a_), b(b_), restLength(restLength_), maxLength(maxLength_), k(k_), color(color_) {}
 
+    std::vector<Particle*> getParticles() const override {
+        return {a, b};
+    }
+
     void draw(sf::RenderWindow& window) const override {
         float dx = static_cast<float>(b->x - a->x);
         float dy = static_cast<float>(b->y - a->y);

@@ -36,6 +36,10 @@ add_executable(doublePendulum ${SOURCES_NO_MAIN} scenarios/doublePendulum/Double
 target_include_directories(doublePendulum PRIVATE include)
 target_link_libraries(doublePendulum PRIVATE SFML::Graphics)
 
-add_executable(cloth ${SOURCES_NO_MAIN} scenarios/cloth/Cloth.cpp)
-target_include_directories(cloth PRIVATE include)
-target_link_libraries(cloth PRIVATE SFML::Graphics)
+add_executable(clothMovement ${SOURCES_NO_MAIN} scenarios/clothMovement/ClothMovement.cpp)
+target_include_directories(clothMovement PRIVATE include)
+target_link_libraries(clothMovement PRIVATE SFML::Graphics)
+
+add_executable(clothCut ${SOURCES_NO_MAIN} scenarios/clothCut/ClothCut.cpp)
+target_include_directories(clothCut PRIVATE include)
+target_link_libraries(clothCut PRIVATE SFML::Graphics)

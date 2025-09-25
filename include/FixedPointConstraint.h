@@ -9,6 +9,10 @@ struct FixedPointConstraint : Constraint {
     FixedPointConstraint(Particle* particle, double x, double y)
         : p(particle), fx(x), fy(y) {}
 
+    std::vector<Particle*> getParticles() const override {
+        return {p};
+    }
+
     void apply(double dt, int iterations, IntegratorType integrator) override {
         p->x = fx;
         p->y = fy;

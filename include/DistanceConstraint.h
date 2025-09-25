@@ -11,6 +11,11 @@ struct DistanceConstraint : Constraint {
     DistanceConstraint(Particle* a_, Particle* b_, double length_, sf::Color color_ = sf::Color::White)
         : a(a_), b(b_), restLength(length_), color(color_) {}
 
+
+    std::vector<Particle*> getParticles() const override {
+        return {a, b};
+    }
+
     void draw(sf::RenderWindow& window) const override {
         float dx = static_cast<float>(b->x - a->x);
         float dy = static_cast<float>(b->y - a->y);
