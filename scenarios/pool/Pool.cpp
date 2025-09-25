@@ -87,7 +87,7 @@ int main() {
     // Forcefields
     world.forcefields.push_back(std::make_unique<Forcefield>(
         std::make_unique<RectArea>(500, 300, 736, 376, sf::Color(0,102,204)),
-        std::make_unique<DragEffect>(0.38)
+        std::make_unique<DragEffect>(0.50)
     ));
 
     // Launchable particle
@@ -98,9 +98,9 @@ int main() {
 
     // Systems
     Simulator simulator;
+    simulator.addSystem(std::make_unique<ForcefieldSystem>());
     simulator.addSystem(std::make_unique<EulerIntegratorSystem>());
     simulator.addSystem(std::make_unique<CollisionSystem>(world, windowWidth, windowHeight));
-    simulator.addSystem(std::make_unique<ForcefieldSystem>());
     simulator.addSystem(std::make_unique<RenderSystem>(window));
 
     // Run simulation

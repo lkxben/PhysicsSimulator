@@ -12,7 +12,7 @@ struct MovableFixedPointConstraint : public FixedPointConstraint, public Interac
     MovableFixedPointConstraint(Particle* particle, double x, double y)
         : FixedPointConstraint(particle, x, y) {}
 
-    void handleEvent(const sf::Event& event, const sf::RenderWindow& window) override {
+    void handleEvent(const sf::Event& event, const sf::RenderWindow& window, double dt) override {
         sf::Vector2f mousePos(
             static_cast<float>(sf::Mouse::getPosition(window).x),
             static_cast<float>(sf::Mouse::getPosition(window).y)

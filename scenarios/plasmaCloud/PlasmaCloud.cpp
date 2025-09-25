@@ -49,9 +49,9 @@ int main() {
     forceSystem->addForce(Force::electric(1000));
 
     Simulator simulator;
+    simulator.addSystem(std::move(forceSystem));
     simulator.addSystem(std::make_unique<EulerIntegratorSystem>(true, windowWidth, windowHeight));
     simulator.addSystem(std::make_unique<CollisionSystem>(world, windowWidth, windowHeight));
-    simulator.addSystem(std::move(forceSystem));
     simulator.addSystem(std::make_unique<RenderSystem>(window));
 
     EventManager events{window};

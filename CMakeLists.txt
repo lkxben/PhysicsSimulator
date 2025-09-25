@@ -35,3 +35,7 @@ target_link_libraries(plasmaCloud PRIVATE SFML::Graphics)
 add_executable(doublePendulum ${SOURCES_NO_MAIN} scenarios/doublePendulum/DoublePendulum.cpp)
 target_include_directories(doublePendulum PRIVATE include)
 target_link_libraries(doublePendulum PRIVATE SFML::Graphics)
+
+add_executable(cloth ${SOURCES_NO_MAIN} scenarios/cloth/Cloth.cpp)
+target_include_directories(cloth PRIVATE include)
+target_link_libraries(cloth PRIVATE SFML::Graphics)

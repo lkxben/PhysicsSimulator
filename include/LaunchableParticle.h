@@ -14,7 +14,7 @@ struct LaunchableParticle : public Particle, public Interactive {
     LaunchableParticle(double x_, double y_, double mass_ = 1.0, float radius_ = 5.0, double elasticity_ = 1.0, sf::Color color_ = sf::Color::White, double maxForce_ = 500.0f, double forceScale_ = 4.0f)
         : Particle(x_, y_, 0.0, 0.0, mass_, radius_, elasticity_, color_), maxForce(maxForce_), forceScale(forceScale_) {}
 
-    void handleEvent(const sf::Event& event, const sf::RenderWindow& window) override {
+    void handleEvent(const sf::Event& event, const sf::RenderWindow& window, double dt) override {
         const double EPS = 1e-1;
         if (std::abs(vx) < EPS) vx = 0;
         if (std::abs(vy) < EPS) vy = 0;

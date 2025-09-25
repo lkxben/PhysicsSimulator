@@ -49,14 +49,14 @@ int main() {
 
     // Forcefield (gravity)
     world.forcefields.push_back(std::make_unique<Forcefield>(
-        std::make_unique<RectArea>(400, 300, 800, 600, sf::Color::Black),
+        std::make_unique<RectArea>(windowWidth/2, windowHeight/2, windowWidth, windowHeight, sf::Color::Black),
         std::make_unique<GravityEffect>(50)
     ));
 
     // Simulator and systems
     Simulator simulator;
-    simulator.addSystem(std::make_unique<EulerIntegratorSystem>(true, windowWidth, windowHeight));
     simulator.addSystem(std::make_unique<ForcefieldSystem>());
+    simulator.addSystem(std::make_unique<EulerIntegratorSystem>(true, windowWidth, windowHeight));
     simulator.addSystem(std::make_unique<ConstraintSystem>(IntegratorType::Euler));
     simulator.addSystem(std::make_unique<RenderSystem>(window));
 

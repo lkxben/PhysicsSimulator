@@ -14,12 +14,6 @@ public:
     }
 
     void update(World& world, double dt) override {
-        // Reset accelerations
-        for (auto& p : world.particles) {
-            p->ax = 0.0;
-            p->ay = 0.0;
-        }
-
         // Apply inter-particle forces
         for (auto& force : forces) {
             for (size_t i = 0; i < world.particles.size(); ++i) {

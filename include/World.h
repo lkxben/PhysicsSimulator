@@ -12,4 +12,11 @@ public:
     std::vector<std::unique_ptr<Obstacle>> obstacles;
     std::vector<std::unique_ptr<Forcefield>> forcefields;
     std::vector<std::unique_ptr<Constraint>> constraints;
+
+    void reset() {
+        for (auto& p : particles) {
+            p->ax = 0.0;
+            p->ay = 0.0;
+        }
+    }
 };

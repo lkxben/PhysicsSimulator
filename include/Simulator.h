@@ -21,9 +21,10 @@ struct Simulator {
         sf::Clock clock;
 
         while (true) {
-            events.pollEvents();
             double dt = clock.restart().asSeconds();
+            events.pollEvents(dt);
 
+            world.reset();
             for (auto& system : systems) {
                 system->update(world, dt);
             }
