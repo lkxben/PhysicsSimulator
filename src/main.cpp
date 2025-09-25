@@ -49,11 +49,17 @@ int main() {
         for (int j = 0; j < cols; ++j) {
             Particle* p = grid[i][j];
 
+            // if (j < cols - 1)
+            //     world.constraints.push_back(std::make_unique<MaxDistanceConstraint>(p, grid[i][j+1], spacing));
+
+            // if (i < rows - 1)
+            //     world.constraints.push_back(std::make_unique<MaxDistanceConstraint>(p, grid[i+1][j], spacing));
+
             if (j < cols - 1)
-                world.constraints.push_back(std::make_unique<MaxDistanceConstraint>(p, grid[i][j+1], spacing));
+                world.constraints.push_back(std::make_unique<ElasticDistanceConstraint>(p, grid[i][j+1], spacing, spacing + 1.5));
 
             if (i < rows - 1)
-                world.constraints.push_back(std::make_unique<MaxDistanceConstraint>(p, grid[i+1][j], spacing));
+                world.constraints.push_back(std::make_unique<ElasticDistanceConstraint>(p, grid[i+1][j], spacing, spacing + 1.5));
 
             // if (i < rows - 1 && j < cols - 1) {
             //     world.constraints.push_back(std::make_unique<ElasticDistanceConstraint>(p, grid[i+1][j+1], spacing * 1.414));
