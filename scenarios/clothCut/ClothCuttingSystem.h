@@ -8,15 +8,14 @@
 
 class ClothCuttingSystem : public System, public Interactive {
 public:
-    sf::Vector2f center;
+    Vector2 center;
     float radius;
 
     ClothCuttingSystem(float radius_) : radius(radius_) {}
 
-    void handleEvent(const sf::Event& event, const sf::RenderWindow& window, double dt) override {
-        if (!event.is<sf::Event::MouseMoved>()) return;
-        const auto* move = event.getIf<sf::Event::MouseMoved>();
-        center = window.mapPixelToCoords({move->position.x, move->position.y});
+    void handleEvent(double dt) override {
+        Vector2 mousePos = GetMousePosition();
+        center = mousePos;
     }
 
     void update(World& world, double dt) override {

@@ -18,7 +18,8 @@ int main() {
     const unsigned int windowWidth = 800;
     const unsigned int windowHeight = 600;
 
-    sf::RenderWindow window{sf::VideoMode{sf::Vector2u{windowWidth, windowHeight}}, "Cloth Cut"};
+    InitWindow(windowWidth, windowHeight, "Cloth Cut");
+    SetTargetFPS(60);
 
     World world;
 
@@ -38,7 +39,7 @@ int main() {
                 .y = startY + i * spacing,
                 .mass = 1.0,
                 .radius = 0.0,
-                .color = sf::Color::White
+                .color = WHITE
             });
             grid[i][j] = p.get();
             world.particles.push_back(std::move(p));
@@ -68,16 +69,16 @@ int main() {
 
     // Forcefields
     world.forcefields.push_back(std::make_unique<Forcefield>(
-        std::make_unique<RectArea>(windowWidth / 2, windowHeight / 2, windowWidth, windowHeight, sf::Color::Black),
+        std::make_unique<RectArea>(windowWidth / 2, windowHeight / 2, windowWidth, windowHeight, BLACK),
         std::make_unique<GravityEffect>(200)
     ));
 
     world.forcefields.push_back(std::make_unique<Forcefield>(
-        std::make_unique<RectArea>(windowWidth / 2, windowHeight / 2, windowWidth, windowHeight, sf::Color::Black),
+        std::make_unique<RectArea>(windowWidth / 2, windowHeight / 2, windowWidth, windowHeight, BLACK),
         std::make_unique<DragEffect>(1)
     ));
 
-    EventManager events{window};
+    EventManager events;
     auto cuttingSystem = std::make_unique<ClothCuttingSystem>(5.0);
     events.registerInteractive(cuttingSystem.get()); 
 
@@ -87,7 +88,7 @@ int main() {
     simulator.addSystem(std::move(cuttingSystem));
     simulator.addSystem(std::make_unique<VerletIntegratorSystem>());
     simulator.addSystem(std::make_unique<ConstraintSystem>(IntegratorType::Verlet));
-    simulator.addSystem(std::make_unique<RenderSystem>(window));
+    simulator.addSystem(std::make_unique<RenderSystem>());
     simulator.run(world, events);
 
     return 0;
