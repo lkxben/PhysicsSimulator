@@ -3,7 +3,6 @@
 #include "../include/World.h"
 #include "../include/Interactive.h"
 #include "../include/Constraint.h"
-#include <SFML/Graphics.hpp>
 #include <cmath>
 
 class ClothCuttingSystem : public System, public Interactive {

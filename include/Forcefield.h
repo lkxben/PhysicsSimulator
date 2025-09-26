@@ -2,7 +2,6 @@
 #include "Area.h"
 #include "Effect.h"
 #include <memory>
-#include <SFML/Graphics.hpp>
 
 struct Forcefield {
     std::unique_ptr<Area> area;

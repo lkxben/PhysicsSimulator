@@ -1,4 +1,3 @@
-#include <SFML/Graphics.hpp>
 #include <vector>
 #include <memory>
 #include <cmath>
@@ -16,7 +15,8 @@ int main() {
     const unsigned int windowWidth = 800;
     const unsigned int windowHeight = 600;
 
-    sf::RenderWindow window{sf::VideoMode{sf::Vector2u{windowWidth, windowHeight}}, "Three Body"};
+    InitWindow(windowWidth, windowHeight, "Three Body");
+    SetTargetFPS(120);
 
     World world;
 
@@ -31,7 +31,7 @@ int main() {
         .vx = 0.0, .vy = v,
         .mass = m,
         .radius = 5.0,
-        .color = sf::Color::Red
+        .color = RED
     }));
 
     world.particles.push_back(std::make_unique<Particle>(ParticleParams{
@@ -39,7 +39,7 @@ int main() {
         .vx = -v * std::sqrt(3) / 2, .vy = -v * 0.5,
         .mass = m,
         .radius = 5.0,
-        .color = sf::Color::Blue
+        .color = BLUE
     }));
 
     world.particles.push_back(std::make_unique<Particle>(ParticleParams{
@@ -47,7 +47,7 @@ int main() {
         .vx = v * std::sqrt(3) / 2, .vy = -v * 0.5,
         .mass = m,
         .radius = 5.0,
-        .color = sf::Color::Green
+        .color = GREEN
     }));
 
     // Create systems
@@ -59,9 +59,9 @@ int main() {
     simulator.addSystem(std::move(forceSystem));
     simulator.addSystem(std::make_unique<EulerIntegratorSystem>(true, windowWidth, windowHeight));
     simulator.addSystem(std::make_unique<CollisionSystem>(world, windowWidth, windowHeight));
-    simulator.addSystem(std::make_unique<RenderSystem>(window));
+    simulator.addSystem(std::make_unique<RenderSystem>());
 
-    EventManager events{window};
+    EventManager events;
 
     // Run simulation
     simulator.run(world, events);

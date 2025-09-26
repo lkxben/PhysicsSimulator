@@ -10,10 +10,5 @@ struct Ball : public Particle {
         if (!alive) return;
 
         Particle::draw();
-        // sf::CircleShape shape{radius, 30};
-        // shape.setOrigin({radius, radius});
-        // shape.setPosition({static_cast<float>(x), static_cast<float>(y)});
-        // shape.setFillColor(color);
-        // window.draw(shape);
     }
 };

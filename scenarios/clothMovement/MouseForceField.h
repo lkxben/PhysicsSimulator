@@ -41,7 +41,7 @@ struct MovableCircleArea : public CircleArea {
         : CircleArea(x_, y_, r_, color_) {}
 
     void setPosition(const Vector2& pos) { x = pos.x; y = pos.y; }
-    sf::Vector2f getPosition() const { return {x, y}; }
+    Vector2 getPosition() const { return {x, y}; }
 };
 
 struct MouseForcefield : public Interactive, public Forcefield {
