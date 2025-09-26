@@ -34,9 +34,10 @@ target_link_libraries(main PRIVATE ${raylib_LIBRARIES})
 # target_include_directories(plasmaCloud PRIVATE include)
 # target_link_libraries(plasmaCloud PRIVATE SFML::Graphics)
 
-# add_executable(doublePendulum ${SOURCES_NO_MAIN} scenarios/doublePendulum/DoublePendulum.cpp)
-# target_include_directories(doublePendulum PRIVATE include)
-# target_link_libraries(doublePendulum PRIVATE SFML::Graphics)
+add_executable(doublePendulum ${SOURCES_NO_MAIN} scenarios/doublePendulum/DoublePendulum.cpp)
+target_include_directories(doublePendulum PRIVATE include ${raylib_INCLUDE_DIRS})
+target_link_libraries(doublePendulum PRIVATE SFML::Graphics)
+target_link_libraries(doublePendulum PRIVATE ${raylib_LIBRARIES})
 
 add_executable(clothMovement ${SOURCES_NO_MAIN} scenarios/clothMovement/ClothMovement.cpp)
 target_include_directories(clothMovement PRIVATE include ${raylib_INCLUDE_DIRS})

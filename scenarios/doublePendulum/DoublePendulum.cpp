@@ -16,22 +16,24 @@ int main() {
     const unsigned int windowWidth = 800;
     const unsigned int windowHeight = 1000;
 
-    sf::RenderWindow window{sf::VideoMode{sf::Vector2u{windowWidth, windowHeight}}, "Double Pendulum"};
+    InitWindow(windowWidth, windowHeight, "Double Pendulum");
+    SetTargetFPS(60);
+
     World world;
 
     // Pivot particle (fixed)
     auto pivot = std::make_unique<Particle>(ParticleParams{
-        .x = 400.0, .y = 500.0, .radius = 5.0, .color = sf::Color::Yellow
+        .x = 400.0, .y = 500.0, .radius = 5.0, .color = WHITE
     });
 
     // First bob (middle)
     auto middle = std::make_unique<Particle>(ParticleParams{
-        .x = 400.0, .y = 400.0, .mass = 50.0, .radius = 15.0, .color = sf::Color::Red
+        .x = 400.0, .y = 400.0, .mass = 50.0, .radius = 15.0, .color = RED, .vx = -200.0
     });
 
     // Second bob (end)
     auto end = std::make_unique<Particle>(ParticleParams{
-        .x = 400.0, .y = 250.0, .mass = 20.0, .radius = 10.0, .color = sf::Color::Blue, .vx = 200.0
+        .x = 400.0, .y = 250.0, .mass = 20.0, .radius = 10.0, .color = BLUE, .vx = 500.0
     });
 
     Particle* pivotPtr = pivot.get();
@@ -49,7 +51,7 @@ int main() {
 
     // Forcefield (gravity)
     world.forcefields.push_back(std::make_unique<Forcefield>(
-        std::make_unique<RectArea>(windowWidth/2, windowHeight/2, windowWidth, windowHeight, sf::Color::Black),
+        std::make_unique<RectArea>(windowWidth/2, windowHeight/2, windowWidth, windowHeight, BLACK),
         std::make_unique<GravityEffect>(50)
     ));
 
@@ -58,9 +60,9 @@ int main() {
     simulator.addSystem(std::make_unique<ForcefieldSystem>());
     simulator.addSystem(std::make_unique<EulerIntegratorSystem>(true, windowWidth, windowHeight));
     simulator.addSystem(std::make_unique<ConstraintSystem>(IntegratorType::Euler));
-    simulator.addSystem(std::make_unique<RenderSystem>(window));
+    simulator.addSystem(std::make_unique<RenderSystem>());
 
-    EventManager events{window};
+    EventManager events;
 
     // Run simulation
     simulator.run(world, events);
