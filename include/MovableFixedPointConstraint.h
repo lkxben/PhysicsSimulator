@@ -1,49 +1,43 @@
 #pragma once
-#include <SFML/Graphics.hpp>
-#include <cmath>
 #include "FixedPointConstraint.h"
 #include "Interactive.h"
 
 struct MovableFixedPointConstraint : public FixedPointConstraint, public Interactive {
     bool isDragging = false;
-    sf::Vector2f dragStart;
-    sf::Vector2f dragCurrent;
+    float dragStartX, dragStartY;
+    float dragCurrentX, dragCurrentY;
 
     MovableFixedPointConstraint(Particle* particle, double x, double y)
         : FixedPointConstraint(particle, x, y) {}
 
-    void handleEvent(const sf::Event& event, const sf::RenderWindow& window, double dt) override {
-        sf::Vector2f mousePos(
-            static_cast<float>(sf::Mouse::getPosition(window).x),
-            static_cast<float>(sf::Mouse::getPosition(window).y)
-        );
+    void handleEvent(double dt) override {
+        float mouseX = static_cast<float>(GetMouseX());
+        float mouseY = static_cast<float>(GetMouseY());
 
-        if (event.is<sf::Event::MouseButtonPressed>()) {
-            if (!isDragging && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
-                float dx = mousePos.x - fx;
-                float dy = mousePos.y - fy;
-                if (dx*dx + dy*dy <= 100.f) {
-                    isDragging = true;
-                    dragStart = mousePos;
-                    dragCurrent = mousePos;
-                }
+        if (!isDragging && IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {
+            float dx = mouseX - fx;
+            float dy = mouseY - fy;
+            if (dx*dx + dy*dy <= 100.f) {
+                isDragging = true;
+                dragStartX = mouseX;
+                dragStartY = mouseY;
+                dragCurrentX = mouseX;
+                dragCurrentY = mouseY;
             }
+        } 
+        else if (isDragging && !IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {
+            isDragging = false;
         }
-        else if (event.is<sf::Event::MouseMoved>()) {
-            if (isDragging) {
-                dragCurrent = mousePos;
-                fx = dragCurrent.x;
-                fy = dragCurrent.y;
-            }
-        }
-        else if (event.is<sf::Event::MouseButtonReleased>()) {
-            if (isDragging) {
-                isDragging = false;
-            }
+
+        if (isDragging) {
+            dragCurrentX = mouseX;
+            dragCurrentY = mouseY;
+            fx = dragCurrentX;
+            fy = dragCurrentY;
         }
     }
 
-    void draw(sf::RenderWindow& window) const override {
+    void draw() const override {
         return;
     }
 };

@@ -22,7 +22,7 @@ struct FixedPointConstraint : Constraint {
         p->vy = 0;
     }
 
-    void draw(sf::RenderWindow& window) const override {
+    void draw() const override {
         return;
     }
 };

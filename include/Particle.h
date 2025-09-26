@@ -1,6 +1,8 @@
 #pragma once
 #include <cstddef>
+#include <cmath>
 #include "Entity.h"
+#include "raylib.h"
 
 struct ParticleParams {
     double x = 0;
@@ -11,7 +13,7 @@ struct ParticleParams {
     float radius = 5.0;
     double elasticity = 1.0;
     double charge = 0.0;
-    sf::Color color = sf::Color::White;
+    Color color = WHITE;
 };
 
 struct Particle : public Entity {
@@ -23,7 +25,7 @@ struct Particle : public Entity {
     double elasticity;
     double charge;
 
-    Particle(double x_, double y_, double vx_, double vy_, double mass_ = 1.0, float radius_ = 5.0, double elasticity_ = 1.0, sf::Color color_ = sf::Color::White) 
+    Particle(double x_, double y_, double vx_, double vy_, double mass_ = 1.0, float radius_ = 5.0, double elasticity_ = 1.0, Color color_ = WHITE) 
         : Entity(x_, y_, color_), vx(vx_), vy(vy_), px(NAN), py(NAN), mass(mass_), elasticity(elasticity_), radius(radius_) {}
 
     Particle(const ParticleParams& params)
@@ -31,11 +33,8 @@ struct Particle : public Entity {
 
     virtual ~Particle() = default;
 
-    void draw(sf::RenderWindow& window) const override {
-        sf::CircleShape shape{radius, 30};
-        shape.setPosition({static_cast<float>(x - radius),
-                        static_cast<float>(y - radius)});
-        shape.setFillColor(color);
-        window.draw(shape);
+    void draw() const override {
+        DrawCircle(static_cast<int>(x), static_cast<int>(y), static_cast<float>(radius),
+                CLITERAL(Color){color.r, color.g, color.b, color.a});
     }
 };

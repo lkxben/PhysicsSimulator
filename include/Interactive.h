@@ -4,5 +4,5 @@
 
 struct Interactive {
     virtual ~Interactive() = default;
-    virtual void handleEvent(const sf::Event& event, const sf::RenderWindow& window, double dt) = 0;
+    virtual void handleEvent(double dt) = 0;
 };

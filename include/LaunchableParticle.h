@@ -1,87 +1,80 @@
 #pragma once
-#include <SFML/Graphics.hpp>
 #include <cmath>
 #include "Particle.h"
 #include "Interactive.h"
 
 struct LaunchableParticle : public Particle, public Interactive {
     bool isDragging = false;
-    sf::Vector2f dragStart;
-    sf::Vector2f dragCurrent;
+    float dragStartX = 0, dragStartY = 0;
+    float dragCurrentX = 0, dragCurrentY = 0;
     double maxForce;
     double forceScale;
 
-    LaunchableParticle(double x_, double y_, double mass_ = 1.0, float radius_ = 5.0, double elasticity_ = 1.0, sf::Color color_ = sf::Color::White, double maxForce_ = 500.0f, double forceScale_ = 4.0f)
+    LaunchableParticle(double x_, double y_, double mass_ = 1.0, float radius_ = 5.0, double elasticity_ = 1.0, Color color_ = WHITE, double maxForce_ = 500.0f, double forceScale_ = 4.0f)
         : Particle(x_, y_, 0.0, 0.0, mass_, radius_, elasticity_, color_), maxForce(maxForce_), forceScale(forceScale_) {}
 
-    void handleEvent(const sf::Event& event, const sf::RenderWindow& window, double dt) override {
+    void handleEvent(double dt) override {
         const double EPS = 1e-1;
         if (std::abs(vx) < EPS) vx = 0;
         if (std::abs(vy) < EPS) vy = 0;
         if (vx != 0 || vy != 0) return;
 
-        sf::Vector2f mousePos(
-            static_cast<float>(sf::Mouse::getPosition(window).x),
-            static_cast<float>(sf::Mouse::getPosition(window).y)
-        );
+        float mouseX = static_cast<float>(GetMouseX());
+        float mouseY = static_cast<float>(GetMouseY());
+        bool leftPressed = IsMouseButtonDown(MOUSE_LEFT_BUTTON);
 
-        if (event.is<sf::Event::MouseButtonPressed>()) {
-            if (!isDragging && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
-                float dx = mousePos.x - x;
-                float dy = mousePos.y - y;
-                if (dx*dx + dy*dy <= radius*radius) {
-                    isDragging = true;
-                    dragStart = mousePos;
-                    dragCurrent = mousePos;
-                }
+        if (!isDragging && leftPressed) {
+            float dx = mouseX - x;
+            float dy = mouseY - y;
+            if (dx*dx + dy*dy <= radius*radius) {
+                isDragging = true;
+                dragStartX = mouseX;
+                dragStartY = mouseY;
+                dragCurrentX = mouseX;
+                dragCurrentY = mouseY;
             }
         }
-        else if (event.is<sf::Event::MouseMoved>()) {
-            if (isDragging) {
-                dragCurrent = mousePos;
-            }
-        }
-        else if (event.is<sf::Event::MouseButtonReleased>()) {
-            if (isDragging) {
-                sf::Vector2f pull = dragStart - dragCurrent;
-                float length = std::sqrt(pull.x * pull.x + pull.y * pull.y);
-                if (length > 0.f) {
-                    sf::Vector2f dir = pull / length;
-                    float forceMag = length * forceScale;
-                    if (forceMag > maxForce) forceMag = maxForce;
 
-                    vx = static_cast<double>(dir.x * forceMag / mass);
-                    vy = static_cast<double>(dir.y * forceMag / mass);
-                }
-                isDragging = false;
+        if (isDragging && leftPressed) {
+            dragCurrentX = mouseX;
+            dragCurrentY = mouseY;
+        }
+
+        if (isDragging && !leftPressed) {
+            float pullX = dragStartX - dragCurrentX;
+            float pullY = dragStartY - dragCurrentY;
+            float length = std::sqrt(pullX * pullX + pullY * pullY);
+            if (length > 0.f) {
+                float dirX = pullX / length;
+                float dirY = pullY / length;
+                float forceMag = length * forceScale;
+                if (forceMag > maxForce) forceMag = static_cast<float>(maxForce);
+
+                vx = static_cast<double>(dirX * forceMag / mass);
+                vy = static_cast<double>(dirY * forceMag / mass);
             }
+            isDragging = false;
         }
     }
 
-    void draw(sf::RenderWindow& window) const override {
-        sf::CircleShape shape(radius);
-        shape.setOrigin(sf::Vector2f(radius, radius));
-        shape.setPosition(sf::Vector2f(static_cast<float>(x), static_cast<float>(y)));
-        shape.setFillColor(color);
-        window.draw(shape);
+    void draw() const override {
+        DrawCircle(static_cast<int>(x), static_cast<int>(y), radius, color);
 
         if (isDragging) {
-            sf::Vector2f center(static_cast<float>(x), static_cast<float>(y));
-            sf::Vector2f toMouse = dragCurrent - center;
-            float dist = std::sqrt(toMouse.x * toMouse.x + toMouse.y * toMouse.y);
+            float toMouseX = dragCurrentX - x;
+            float toMouseY = dragCurrentY - y;
+            float dist = std::sqrt(toMouseX * toMouseX + toMouseY * toMouseY);
 
-            if (dist > 0) {
-                sf::Vector2f dir = toMouse / dist;
-                float scale = 1.0f;
-                sf::Vector2f lineEnd = center - dir * (radius + dist * scale);
+            if (dist > 0.f) {
+                float dirX = toMouseX / dist;
+                float dirY = toMouseY / dist;
 
-                sf::Vertex line[2];
-                line[0].position = center;
-                line[0].color = sf::Color::Yellow;
-                line[1].position = lineEnd;
-                line[1].color = sf::Color::Yellow;
+                float lineEndX = x - dirX * (radius + dist);
+                float lineEndY = y - dirY * (radius + dist);
 
-                window.draw(line, 2, sf::PrimitiveType::Lines);
+                DrawLine(static_cast<int>(x), static_cast<int>(y),
+                         static_cast<int>(lineEndX), static_cast<int>(lineEndY),
+                         YELLOW);
             }
         }
     }

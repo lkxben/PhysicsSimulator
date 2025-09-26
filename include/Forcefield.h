@@ -17,8 +17,8 @@ struct Forcefield {
         }
     }
 
-    void draw(sf::RenderWindow& window) const {
-        area->draw(window);
+    void draw() const {
+        area->draw();
     }
 
     virtual ~Forcefield() = default;

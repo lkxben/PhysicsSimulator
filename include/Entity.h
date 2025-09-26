@@ -1,14 +1,14 @@
 #pragma once
 #include <cstddef>
-#include <SFML/Graphics.hpp>
+#include "raylib.h"
 
 struct Entity {
     double x, y;
-    sf::Color color;
+    Color color;
 
-    Entity(double x_, double y_, sf::Color color_ = sf::Color::White)
+    Entity(double x_, double y_, Color color_ = WHITE)
         : x(x_), y(y_), color(color_) {}
 
     virtual ~Entity() = default;
-    virtual void draw(sf::RenderWindow& window) const = 0;
+    virtual void draw() const = 0;
 };

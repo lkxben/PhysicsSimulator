@@ -1,42 +1,37 @@
 #pragma once
 #include "Constraint.h"
 #include "Particle.h"
+#include <cmath>
 
 struct MaxDistanceConstraint : Constraint {
     Particle* a;
     Particle* b;
     double maxLength;
-    sf::Color color;
+    Color color;
 
-    MaxDistanceConstraint(Particle* a_, Particle* b_, double maxLength_, sf::Color color_ = sf::Color::White)
+    MaxDistanceConstraint(Particle* a_, Particle* b_, double maxLength_, Color color_ = WHITE)
         : a(a_), b(b_), maxLength(maxLength_), color(color_) {}
 
     std::vector<Particle*> getParticles() const override {
         return {a, b};
     }
 
-    void draw(sf::RenderWindow& window) const override {
-        float dx = static_cast<float>(b->x - a->x);
-        float dy = static_cast<float>(b->y - a->y);
-        float dist = std::sqrt(dx*dx + dy*dy);
-        if (dist < 1e-6f) return;
+    void draw() const override {
+        double dx = b->x - a->x;
+        double dy = b->y - a->y;
+        double dist = std::sqrt(dx*dx + dy*dy);
+        if (dist < 1e-6 || dist <= maxLength) return;
 
-        float ux = dx / dist;
-        float uy = dy / dist;
+        double ux = dx / dist;
+        double uy = dy / dist;
 
-        sf::Vector2f start(static_cast<float>(a->x) + ux * a->radius,
-                        static_cast<float>(a->y) + uy * a->radius);
-        sf::Vector2f end(static_cast<float>(b->x) - ux * b->radius,
-                        static_cast<float>(b->y) - uy * b->radius);
+        int x0 = static_cast<int>(a->x + ux * a->radius);
+        int y0 = static_cast<int>(a->y + uy * a->radius);
+        int x1 = static_cast<int>(b->x - ux * b->radius);
+        int y1 = static_cast<int>(b->y - uy * b->radius);
 
-        sf::VertexArray line(sf::PrimitiveType::Lines, 2);
-        line[0].position = start;
-        line[0].color = color;
-        line[1].position = end;
-        line[1].color = color;
-
-        window.draw(line);
-    }   
+        DrawLine(x0, y0, x1, y1, color);
+    }
 
     void apply(double dt, int iterations, IntegratorType integrator) override {
         double dx = b->x - a->x;
@@ -62,16 +57,12 @@ struct MaxDistanceConstraint : Constraint {
             double relVx = b->vx - a->vx;
             double relVy = b->vy - a->vy;
 
-            double dot = relVx * dx + relVy * dy;
-            double k = dot / (dist * dist);
+            double k = (relVx * dx + relVy * dy) / (dist * dist);
 
-            double vxCorrection = k * dx;
-            double vyCorrection = k * dy;
-
-            a->vx += vxCorrection * invMassA / invMassSum;
-            a->vy += vyCorrection * invMassA / invMassSum;
-            b->vx -= vxCorrection * invMassB / invMassSum;
-            b->vy -= vyCorrection * invMassB / invMassSum;
+            a->vx += k * dx * invMassA / invMassSum;
+            a->vy += k * dy * invMassA / invMassSum;
+            b->vx -= k * dx * invMassB / invMassSum;
+            b->vy -= k * dy * invMassB / invMassSum;
 
         } else if (integrator == IntegratorType::Verlet) {
             double k_iter = 1.0 / iterations;

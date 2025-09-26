@@ -1,14 +1,13 @@
 #pragma once
-#include <SFML/Graphics.hpp>
-#include <SFML/System/Angle.hpp>
 #include "Interactive.h"
-#include <iostream>
+#include <vector>
+#include "raylib.h"
 
 class EventManager {
-    sf::RenderWindow& window;
     std::vector<Interactive*> interactives;
+
 public:
-    EventManager(sf::RenderWindow& w) : window(w) {}
+    EventManager() = default;
 
     void registerInteractive(Interactive* interactive) {
         if (interactive) {
@@ -17,13 +16,16 @@ public:
     }
 
     void pollEvents(double dt) {
-        while (auto eventOpt = window.pollEvent()) {
-            const sf::Event& event = *eventOpt;
-            if (event.is<sf::Event::Closed>())
-                window.close();
+        int mouseX = GetMouseX();
+        int mouseY = GetMouseY();
+        bool leftPressed = IsMouseButtonDown(MOUSE_LEFT_BUTTON);
 
-            for (auto* obj : interactives)
-                obj->handleEvent(event, window, dt);
+        for (auto* obj : interactives) {
+            obj->handleEvent(dt);
+        }
+
+        if (IsKeyPressed(KEY_ESCAPE)) {
+            CloseWindow();
         }
     }
 };

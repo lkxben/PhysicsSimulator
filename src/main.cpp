@@ -14,12 +14,14 @@
 #include "../include/RenderSystem.h"
 #include "../include/EulerIntegratorSystem.h"
 #include "../include/VerletIntegratorSystem.h"
+#include "raylib.h"
 
 int main() {
     const unsigned int windowWidth = 800;
     const unsigned int windowHeight = 600;
 
-    sf::RenderWindow window{sf::VideoMode{sf::Vector2u{windowWidth, windowHeight}}, "Cloth"};
+    InitWindow(windowWidth, windowHeight, "Cloth Simulation");
+    SetTargetFPS(60);
 
     World world;
 
@@ -36,8 +38,8 @@ int main() {
                 .x = 200.0 + j * spacing,
                 .y = 50.0 + i * spacing,
                 .mass = 1.0,
-                .radius = 1.0,
-                .color = sf::Color::White
+                .radius = 0.0,
+                .color = WHITE
             });
             grid[i][j] = p.get();
             world.particles.push_back(std::move(p));
@@ -70,12 +72,12 @@ int main() {
 
     // Forcefields
     world.forcefields.push_back(std::make_unique<Forcefield>(
-        std::make_unique<RectArea>(windowWidth / 2, windowHeight / 2, windowWidth, windowHeight, sf::Color::Black),
+        std::make_unique<RectArea>(windowWidth / 2, windowHeight / 2, windowWidth, windowHeight, BLACK),
         std::make_unique<GravityEffect>(100)
     ));
 
     world.forcefields.push_back(std::make_unique<Forcefield>(
-        std::make_unique<RectArea>(windowWidth / 2, windowHeight / 2, windowWidth, windowHeight, sf::Color::Black),
+        std::make_unique<RectArea>(windowWidth / 2, windowHeight / 2, windowWidth, windowHeight, BLACK),
         std::make_unique<DragEffect>(1)
     ));
 
@@ -86,9 +88,9 @@ int main() {
     simulator.addSystem(std::make_unique<ForcefieldSystem>());
     simulator.addSystem(std::make_unique<ConstraintSystem>(IntegratorType::Verlet));
     // simulator.addSystem(std::make_unique<ConstraintSystem>(IntegratorType::Euler));
-    simulator.addSystem(std::make_unique<RenderSystem>(window));
+    simulator.addSystem(std::make_unique<RenderSystem>());
 
-    EventManager events{window};
+    EventManager events;
     {
         auto movable = std::make_unique<MovableFixedPointConstraint>(
             grid[0][0], grid[0][0]->x, grid[0][0]->y

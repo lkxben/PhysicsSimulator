@@ -9,6 +9,7 @@
 #include "ForceSystem.h"
 #include "ConstraintSystem.h"
 #include "Constraint.h"
+#include "raylib.h"
 
 struct Simulator {
     std::vector<std::unique_ptr<System>> systems;
@@ -18,19 +19,19 @@ struct Simulator {
     }
 
     void run(World& world, EventManager& events) {
-        sf::Clock clock;
+        double lastTime = GetTime();
 
-        while (true) {
-            double dt = clock.restart().asSeconds();
+        while (!WindowShouldClose()) {
+            double currentTime = GetTime();
+            double dt = currentTime - lastTime;
+            lastTime = currentTime;
+
             events.pollEvents(dt);
 
             world.reset();
             for (auto& system : systems) {
                 system->update(world, dt);
             }
-
-            auto renderSystem = dynamic_cast<RenderSystem*>(systems.back().get());
-            if (renderSystem && !renderSystem->isRunning()) break;
         }
     }
 

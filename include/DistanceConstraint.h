@@ -1,22 +1,24 @@
 #pragma once
+#include <cmath>
+#include <vector>
 #include "Constraint.h"
 #include "Particle.h"
+#include "raylib.h"
 
 struct DistanceConstraint : Constraint {
     Particle* a;
     Particle* b;
     double restLength;
-    sf::Color color;
+    Color color;
 
-    DistanceConstraint(Particle* a_, Particle* b_, double length_, sf::Color color_ = sf::Color::White)
+    DistanceConstraint(Particle* a_, Particle* b_, double length_, Color color_ = WHITE)
         : a(a_), b(b_), restLength(length_), color(color_) {}
-
 
     std::vector<Particle*> getParticles() const override {
         return {a, b};
     }
 
-    void draw(sf::RenderWindow& window) const override {
+    void draw() const override {
         float dx = static_cast<float>(b->x - a->x);
         float dy = static_cast<float>(b->y - a->y);
         float dist = std::sqrt(dx*dx + dy*dy);
@@ -25,20 +27,14 @@ struct DistanceConstraint : Constraint {
         float ux = dx / dist;
         float uy = dy / dist;
 
-        sf::Vector2f start(static_cast<float>(a->x) + ux * a->radius,
-                        static_cast<float>(a->y) + uy * a->radius);
-        sf::Vector2f end(static_cast<float>(b->x) - ux * b->radius,
-                        static_cast<float>(b->y) - uy * b->radius);
+        float startX = static_cast<float>(a->x + ux * a->radius);
+        float startY = static_cast<float>(a->y + uy * a->radius);
+        float endX = static_cast<float>(b->x - ux * b->radius);
+        float endY = static_cast<float>(b->y - uy * b->radius);
 
-        sf::VertexArray line(sf::PrimitiveType::Lines, 2);
-        line[0].position = start;
-        line[0].color = color;
-        line[1].position = end;
-        line[1].color = color;
-
-        window.draw(line);
+        DrawLine(static_cast<int>(startX), static_cast<int>(startY),
+                 static_cast<int>(endX), static_cast<int>(endY), color);
     }
-
 
     void apply(double dt, int iterations, IntegratorType integrator) override {
         double dx = b->x - a->x;

@@ -7,7 +7,7 @@
 struct Obstacle : public Entity {
     double elasticity;
 
-    Obstacle(double x_, double y_, double elasticity_ = 1.0, sf::Color color_ = sf::Color::White)
+    Obstacle(double x_, double y_, double elasticity_ = 1.0, Color color_ = WHITE)
         : Entity(x_, y_, color_), elasticity(elasticity_) {}
 
     virtual ~Obstacle() = default;
