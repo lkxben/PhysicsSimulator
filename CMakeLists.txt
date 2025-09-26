@@ -22,9 +22,10 @@ target_include_directories(main PRIVATE include ${raylib_INCLUDE_DIRS})
 target_link_libraries(main PRIVATE SFML::Graphics)
 target_link_libraries(main PRIVATE ${raylib_LIBRARIES})
 
-# add_executable(pool ${SOURCES_NO_MAIN} scenarios/pool/Pool.cpp)
-# target_include_directories(pool PRIVATE include)
-# target_link_libraries(pool PRIVATE SFML::Graphics)
+add_executable(pool ${SOURCES_NO_MAIN} scenarios/pool/Pool.cpp)
+target_include_directories(pool PRIVATE include ${raylib_INCLUDE_DIRS})
+target_link_libraries(pool PRIVATE SFML::Graphics)
+target_link_libraries(pool PRIVATE ${raylib_LIBRARIES})
 
 # add_executable(threeBody ${SOURCES_NO_MAIN} scenarios/threeBody/ThreeBody.cpp)
 # target_include_directories(threeBody PRIVATE include)

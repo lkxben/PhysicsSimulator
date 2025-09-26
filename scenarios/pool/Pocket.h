@@ -4,14 +4,12 @@
 
 struct Pocket : public SolidCircleObstacle {
     Pocket(double x_, double y_, double radius_)
-        : SolidCircleObstacle(x_, y_, radius_, 0.0, sf::Color::Black) {}
+        : SolidCircleObstacle(x_, y_, radius_, 0.0, BLACK) {}
 
-    void draw(sf::RenderWindow& window) const override {
-        sf::CircleShape shape(static_cast<float>(radius));
-        shape.setOrigin({static_cast<float>(radius), static_cast<float>(radius)});
-        shape.setPosition({static_cast<float>(x), static_cast<float>(y)});
-        shape.setFillColor(color); 
-        window.draw(shape);
+    void draw() const override {
+        DrawCircleV({static_cast<float>(x), static_cast<float>(y)},
+                    static_cast<float>(radius),
+                    color);
     }
 
     void collide(Particle& p, double dt) const override {

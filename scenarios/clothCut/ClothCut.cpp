@@ -19,7 +19,7 @@ int main() {
     const unsigned int windowHeight = 600;
 
     InitWindow(windowWidth, windowHeight, "Cloth Cut");
-    SetTargetFPS(60);
+    SetTargetFPS(120);
 
     World world;
 

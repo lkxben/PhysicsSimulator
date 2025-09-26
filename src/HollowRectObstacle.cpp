@@ -5,44 +5,47 @@
 HollowRectObstacle::HollowRectObstacle(double x_, double y_, double width_, double height_, double thickness_, double rotation_, double elasticity_, Color color_)
     : Obstacle(x_, y_, elasticity_, color_), width(width_), height(height_), thickness(thickness_), rotation(rotation_) {}
 
-void HollowRectObstacle::draw() const {
-    float halfW = static_cast<float>(width / 2.0);
-    float halfH = static_cast<float>(height / 2.0);
-    float halfT = static_cast<float>(thickness / 2.0);
-    float rotDeg = static_cast<float>(rotation * 180.0 / M_PI);
+    void HollowRectObstacle::draw() const {
+        float halfW = static_cast<float>(width * 0.5);
+        float halfH = static_cast<float>(height * 0.5);
+        float halfT = static_cast<float>(thickness * 0.5);
+        float cx = static_cast<float>(x);
+        float cy = static_cast<float>(y);
+        float rotDeg = static_cast<float>(rotation * 180.0 / M_PI);
 
-    // Top wall
-    DrawRectanglePro(
-        Rectangle{ static_cast<float>(x - width / 2.f), static_cast<float>(y - halfH + halfT), static_cast<float>(width), static_cast<float>(thickness) },
-        Vector2{ static_cast<float>(width) / 2.f, static_cast<float>(thickness) / 2.f },
-        rotDeg,
-        color
-    );
+        // Top wall
+        DrawRectanglePro(
+            Rectangle{ cx, cy - halfH + halfT, static_cast<float>(width), static_cast<float>(thickness) },
+            Vector2{ static_cast<float>(width * 0.5), halfT },
+            rotDeg,
+            color
+        );
 
-    // Bottom wall
-    DrawRectanglePro(
-        Rectangle{ static_cast<float>(x - width / 2.f), static_cast<float>(y + halfH - halfT), static_cast<float>(width), static_cast<float>(thickness) },
-        Vector2{ static_cast<float>(width) / 2.f, static_cast<float>(thickness) / 2.f },
-        rotDeg,
-        color
-    );
+        // Bottom wall
+        DrawRectanglePro(
+            Rectangle{ cx, cy + halfH - halfT, static_cast<float>(width), static_cast<float>(thickness) },
+            Vector2{ static_cast<float>(width * 0.5), halfT },
+            rotDeg,
+            color
+        );
 
-    // Left wall
-    DrawRectanglePro(
-        Rectangle{ static_cast<float>(x - halfW + halfT), static_cast<float>(y - height / 2.f), static_cast<float>(thickness), static_cast<float>(height) },
-        Vector2{ static_cast<float>(thickness) / 2.f, static_cast<float>(height) / 2.f },
-        rotDeg,
-        color
-    );
+        // Left wall
+        DrawRectanglePro(
+            Rectangle{ cx - halfW + halfT, cy, static_cast<float>(thickness), static_cast<float>(height) },
+            Vector2{ halfT, halfH },
+            rotDeg,
+            color
+        );
 
-    // Right wall
-    DrawRectanglePro(
-        Rectangle{ static_cast<float>(x + halfW - halfT), static_cast<float>(y - height / 2.f), static_cast<float>(thickness), static_cast<float>(height) },
-        Vector2{ static_cast<float>(thickness) / 2.f, static_cast<float>(height) / 2.f },
-        rotDeg,
-        color
-    );
-}
+        // Right wall
+        DrawRectanglePro(
+            Rectangle{ cx + halfW - halfT, cy, static_cast<float>(thickness), static_cast<float>(height) },
+            Vector2{ halfT, halfH },
+            rotDeg,
+            color
+        );
+    }
+
 
 void HollowRectObstacle::collide(Particle& p, double dt) const {
     double cosA = std::cos(rotation);

@@ -26,7 +26,8 @@ struct CircleArea : Area {
     }
 
     void draw() const override {
-        DrawCircleLines(static_cast<int>(x), static_cast<int>(y), radius, color);
+        DrawCircleV({ static_cast<float>(x), static_cast<float>(y) }, static_cast<float>(radius),
+                    CLITERAL(Color){color.r, color.g, color.b, color.a});
     }
 };
 
@@ -47,11 +48,11 @@ struct RectArea : Area {
 
     void draw() const override {
         Rectangle rect{};
-        rect.x = static_cast<float>(x - width / 2);
-        rect.y = static_cast<float>(y - height / 2);
-        rect.width = static_cast<float>(width);
-        rect.height = static_cast<float>(height);
+        rect.x = x - width / 2.0f;
+        rect.y = y - height / 2.0f;
+        rect.width = width;
+        rect.height = height;
 
-        DrawRectangleLinesEx(rect, 1.0f, CLITERAL(Color){color.r, color.g, color.b, color.a});
+        DrawRectangleRec(rect, CLITERAL(Color){color.r, color.g, color.b, color.a});
     }
 };

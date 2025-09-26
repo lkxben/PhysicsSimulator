@@ -11,6 +11,10 @@
 #include "../include/CollisionSystem.h"
 #include "../include/RenderSystem.h"
 #include "../include/EulerIntegratorSystem.h"
+#include "../include/SolidRectObstacle.h"
+#include "../include/SolidPolygonObstacle.h"
+#include "../include/HollowRectObstacle.h"
+#include "../include/LaunchableParticle.h"
 #include "Ball.h"
 #include "Pocket.h"
 
@@ -18,7 +22,9 @@ int main() {
     const unsigned int windowWidth = 1000;
     const unsigned int windowHeight = 600;
 
-    sf::RenderWindow window{sf::VideoMode{sf::Vector2u{windowWidth, windowHeight}}, "Pool"};
+    InitWindow(windowWidth, windowHeight, "Pool");
+    SetTargetFPS(200);
+
     World world;
 
     // Set up balls
@@ -38,7 +44,7 @@ int main() {
     for (size_t i = 0; i < std::size(balls); ++i) {
         double x = balls[i].x + posOffset(gen);
         double y = balls[i].y + posOffset(gen);
-        sf::Color color = (i % 2 == 0) ? sf::Color(255, 140, 0) : sf::Color(0, 255, 255);
+        Color color = (i % 2 == 0) ? Color{255, 140, 0, 255} : Color{0, 255, 255, 255};
         world.particles.push_back(std::make_unique<Ball>(x, y, 0.0, 0.0, 1.0, 8.0, 0.9, color));
     }
 
@@ -56,7 +62,7 @@ int main() {
     // Pocket jaws
     auto makeTriangle = [](float x1, float y1, float x2, float y2, float tipX, float tipY) {
         return std::make_unique<SolidPolygonObstacle>(
-            std::vector<sf::Vector2f>{{x1,y1}, {x2,y2}, {tipX,tipY}}, 0.9, sf::Color::White
+            std::vector<Vector2>{{x1,y1}, {x2,y2}, {tipX,tipY}}, 0.9, WHITE
         );
     };
     world.obstacles.push_back(makeTriangle(140, 104, 148, 112, 148, 104));
@@ -86,22 +92,22 @@ int main() {
 
     // Forcefields
     world.forcefields.push_back(std::make_unique<Forcefield>(
-        std::make_unique<RectArea>(500, 300, 736, 376, sf::Color(0,102,204)),
+        std::make_unique<RectArea>(500, 300, 736, 376, Color{0,102,204,255}),
         std::make_unique<DragEffect>(0.50)
     ));
 
     // Launchable particle
-    EventManager events{window};
-    auto particle = std::make_unique<LaunchableParticle>(300, 300, 1.0, 8.0, 0.9, sf::Color::White, 2000);
+    EventManager events;
+    auto particle = std::make_unique<LaunchableParticle>(300, 300, 1.0, 8.0, 0.9, WHITE, 2000);
     events.registerInteractive(particle.get());
     world.particles.push_back(std::move(particle));
 
     // Systems
     Simulator simulator;
     simulator.addSystem(std::make_unique<ForcefieldSystem>());
-    simulator.addSystem(std::make_unique<EulerIntegratorSystem>());
+    simulator.addSystem(std::make_unique<EulerIntegratorSystem>(true, windowWidth, windowHeight));
     simulator.addSystem(std::make_unique<CollisionSystem>(world, windowWidth, windowHeight));
-    simulator.addSystem(std::make_unique<RenderSystem>(window));
+    simulator.addSystem(std::make_unique<RenderSystem>());
 
     // Run simulation
     simulator.run(world, events);
