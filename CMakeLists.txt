@@ -38,9 +38,10 @@ target_link_libraries(main PRIVATE ${raylib_LIBRARIES})
 # target_include_directories(doublePendulum PRIVATE include)
 # target_link_libraries(doublePendulum PRIVATE SFML::Graphics)
 
-# add_executable(clothMovement ${SOURCES_NO_MAIN} scenarios/clothMovement/ClothMovement.cpp)
-# target_include_directories(clothMovement PRIVATE include)
-# target_link_libraries(clothMovement PRIVATE SFML::Graphics)
+add_executable(clothMovement ${SOURCES_NO_MAIN} scenarios/clothMovement/ClothMovement.cpp)
+target_include_directories(clothMovement PRIVATE include ${raylib_INCLUDE_DIRS})
+target_link_libraries(clothMovement PRIVATE SFML::Graphics)
+target_link_libraries(clothMovement PRIVATE ${raylib_LIBRARIES})
 
 # add_executable(clothCut ${SOURCES_NO_MAIN} scenarios/clothCut/ClothCut.cpp)
 # target_include_directories(clothCut PRIVATE include)
