@@ -22,9 +22,9 @@ int main() {
 
     World world;
 
-    const int rows = 30;
-    const int cols = 80;
-    const double spacing = 8.0;
+    const int rows = 50;
+    const int cols = 100;
+    const double spacing = 6.0;
 
     std::vector<std::vector<Particle*>> grid(rows, std::vector<Particle*>(cols, nullptr));
 
