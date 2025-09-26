@@ -37,7 +37,7 @@ int main() {
                 .x = startX + j * spacing,
                 .y = startY + i * spacing,
                 .mass = 1.0,
-                .radius = 1.0,
+                .radius = 0.0,
                 .color = sf::Color::White
             });
             grid[i][j] = p.get();
