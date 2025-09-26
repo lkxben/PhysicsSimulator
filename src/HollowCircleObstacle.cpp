@@ -6,11 +6,12 @@ HollowCircleObstacle::HollowCircleObstacle(double x_, double y_, double radius_,
     : Obstacle(x_, y_, elasticity_, color_), thickness(thickness_), radius(radius_) {}
 
 void HollowCircleObstacle::draw() const {
-    DrawCircle(static_cast<int>(x), static_cast<int>(y), radius, color);
+    Vector2 center{static_cast<float>(x), static_cast<float>(y)};
+    
+    DrawCircleLines(center.x, center.y, static_cast<float>(radius), color);
 
     if (thickness > 0) {
-        Color innerColor = { 0, 0, 0, 0 };
-        DrawCircle(static_cast<int>(x), static_cast<int>(y), radius - thickness, innerColor);
+        DrawCircleLines(center.x, center.y, static_cast<float>(radius - thickness), {0, 0, 0, 0});
     }
 }
 

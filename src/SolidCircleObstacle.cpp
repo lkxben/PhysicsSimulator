@@ -6,9 +6,8 @@ SolidCircleObstacle::SolidCircleObstacle(double x_, double y_, double radius_, d
     : Obstacle(x_, y_, elasticity_, color_), radius(radius_) {}
 
 void SolidCircleObstacle::draw() const {
-    DrawCircle(
-        static_cast<int>(x),
-        static_cast<int>(y),
+    DrawCircleV(
+        Vector2{ static_cast<float>(x), static_cast<float>(y) },
         static_cast<float>(radius),
         color
     );

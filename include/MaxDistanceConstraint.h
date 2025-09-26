@@ -25,12 +25,12 @@ struct MaxDistanceConstraint : Constraint {
         double ux = dx / dist;
         double uy = dy / dist;
 
-        int x0 = static_cast<int>(a->x + ux * a->radius);
-        int y0 = static_cast<int>(a->y + uy * a->radius);
-        int x1 = static_cast<int>(b->x - ux * b->radius);
-        int y1 = static_cast<int>(b->y - uy * b->radius);
+        Vector2 start{static_cast<float>(a->x + ux * a->radius),
+                    static_cast<float>(a->y + uy * a->radius)};
+        Vector2 end{static_cast<float>(b->x - ux * b->radius),
+                    static_cast<float>(b->y - uy * b->radius)};
 
-        DrawLine(x0, y0, x1, y1, color);
+        DrawLineEx(start, end, 1.0f, color);
     }
 
     void apply(double dt, int iterations, IntegratorType integrator) override {

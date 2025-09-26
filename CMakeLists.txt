@@ -30,9 +30,10 @@ target_link_libraries(main PRIVATE ${raylib_LIBRARIES})
 # target_include_directories(threeBody PRIVATE include)
 # target_link_libraries(threeBody PRIVATE SFML::Graphics)
 
-# add_executable(plasmaCloud ${SOURCES_NO_MAIN} scenarios/plasmaCloud/PlasmaCloud.cpp)
-# target_include_directories(plasmaCloud PRIVATE include)
-# target_link_libraries(plasmaCloud PRIVATE SFML::Graphics)
+add_executable(plasmaCloud ${SOURCES_NO_MAIN} scenarios/plasmaCloud/PlasmaCloud.cpp)
+target_include_directories(plasmaCloud PRIVATE include ${raylib_INCLUDE_DIRS})
+target_link_libraries(plasmaCloud PRIVATE SFML::Graphics)
+target_link_libraries(plasmaCloud PRIVATE ${raylib_LIBRARIES})
 
 add_executable(doublePendulum ${SOURCES_NO_MAIN} scenarios/doublePendulum/DoublePendulum.cpp)
 target_include_directories(doublePendulum PRIVATE include ${raylib_INCLUDE_DIRS})

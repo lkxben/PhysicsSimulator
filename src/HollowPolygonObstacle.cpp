@@ -14,9 +14,10 @@ HollowPolygonObstacle::HollowPolygonObstacle(const std::vector<Vector2>& verts, 
 
 void HollowPolygonObstacle::draw() const {
     for (size_t i = 0; i < vertices.size(); ++i) {
-        Vector2 a = vertices[i];
-        Vector2 b = vertices[(i + 1) % vertices.size()];
-        DrawLineEx(a, b, thickness, color);
+        Vector2 a = { static_cast<float>(vertices[i].x), static_cast<float>(vertices[i].y) };
+        Vector2 b = { static_cast<float>(vertices[(i + 1) % vertices.size()].x),
+                      static_cast<float>(vertices[(i + 1) % vertices.size()].y) };
+        DrawLineEx(a, b, static_cast<float>(thickness), color);
     }
 }
 

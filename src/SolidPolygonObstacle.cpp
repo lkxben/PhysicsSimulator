@@ -18,7 +18,7 @@ void SolidPolygonObstacle::draw() const {
     for (size_t i = 0; i < vertices.size(); ++i) {
         Vector2 a = vertices[i];
         Vector2 b = vertices[(i + 1) % vertices.size()];
-        DrawLineV(a, b, color);
+        DrawLineEx(a, b, 1.0f, color);
     }
 
     for (size_t i = 1; i + 1 < vertices.size(); ++i) {

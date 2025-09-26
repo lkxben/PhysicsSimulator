@@ -6,13 +6,17 @@ SolidRectObstacle::SolidRectObstacle(double x_, double y_, double width_, double
     : Obstacle(x_, y_, elasticity_, color_), width(width_), height(height_), rotation(rotation_) {}
 
 void SolidRectObstacle::draw() const {
-    Vector2 center = { static_cast<float>(x), static_cast<float>(y) };
-    DrawRectanglePro(
-        Rectangle{ static_cast<float>(x - width/2.0), static_cast<float>(y - height/2.0), static_cast<float>(width), static_cast<float>(height) },
-        Vector2{ static_cast<float>(width/2.0), static_cast<float>(height/2.0) },
-        static_cast<float>(rotation * 180.0 / M_PI),
-        color
-    );
+    Rectangle rect{
+        static_cast<float>(x),
+        static_cast<float>(y),
+        static_cast<float>(width),
+        static_cast<float>(height)
+    };
+    Vector2 origin{
+        static_cast<float>(width / 2.0),
+        static_cast<float>(height / 2.0)
+    };
+    DrawRectanglePro(rect, origin, static_cast<float>(rotation * 180.0 / M_PI), color);
 }
 
 void SolidRectObstacle::collide(Particle& p, double dt) const {

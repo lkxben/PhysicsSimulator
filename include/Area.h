@@ -46,10 +46,12 @@ struct RectArea : Area {
     }
 
     void draw() const override {
-        DrawRectangleLines(static_cast<int>(x - width / 2),
-                           static_cast<int>(y - height / 2),
-                           static_cast<int>(width),
-                           static_cast<int>(height),
-                           color);
+        Rectangle rect{};
+        rect.x = static_cast<float>(x - width / 2);
+        rect.y = static_cast<float>(y - height / 2);
+        rect.width = static_cast<float>(width);
+        rect.height = static_cast<float>(height);
+
+        DrawRectangleLinesEx(rect, 1.0f, CLITERAL(Color){color.r, color.g, color.b, color.a});
     }
 };

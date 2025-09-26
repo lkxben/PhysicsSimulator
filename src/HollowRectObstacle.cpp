@@ -8,37 +8,37 @@ HollowRectObstacle::HollowRectObstacle(double x_, double y_, double width_, doub
 void HollowRectObstacle::draw() const {
     float halfW = static_cast<float>(width / 2.0);
     float halfH = static_cast<float>(height / 2.0);
-    float halfT = static_cast<float>(thickness / 2.0f);
+    float halfT = static_cast<float>(thickness / 2.0);
     float rotDeg = static_cast<float>(rotation * 180.0 / M_PI);
 
     // Top wall
     DrawRectanglePro(
-        {static_cast<float>(x), static_cast<float>(y - halfH + halfT)},
-        {static_cast<float>(width), static_cast<float>(thickness)},
+        Rectangle{ static_cast<float>(x - width / 2.f), static_cast<float>(y - halfH + halfT), static_cast<float>(width), static_cast<float>(thickness) },
+        Vector2{ static_cast<float>(width) / 2.f, static_cast<float>(thickness) / 2.f },
         rotDeg,
         color
     );
 
     // Bottom wall
     DrawRectanglePro(
-        {static_cast<float>(x), static_cast<float>(y + halfH - halfT)},
-        {static_cast<float>(width), static_cast<float>(thickness)},
+        Rectangle{ static_cast<float>(x - width / 2.f), static_cast<float>(y + halfH - halfT), static_cast<float>(width), static_cast<float>(thickness) },
+        Vector2{ static_cast<float>(width) / 2.f, static_cast<float>(thickness) / 2.f },
         rotDeg,
         color
     );
 
     // Left wall
     DrawRectanglePro(
-        {static_cast<float>(x - halfW + halfT), static_cast<float>(y)},
-        {static_cast<float>(thickness), static_cast<float>(height)},
+        Rectangle{ static_cast<float>(x - halfW + halfT), static_cast<float>(y - height / 2.f), static_cast<float>(thickness), static_cast<float>(height) },
+        Vector2{ static_cast<float>(thickness) / 2.f, static_cast<float>(height) / 2.f },
         rotDeg,
         color
     );
 
     // Right wall
     DrawRectanglePro(
-        {static_cast<float>(x + halfW - halfT), static_cast<float>(y)},
-        {static_cast<float>(thickness), static_cast<float>(height)},
+        Rectangle{ static_cast<float>(x + halfW - halfT), static_cast<float>(y - height / 2.f), static_cast<float>(thickness), static_cast<float>(height) },
+        Vector2{ static_cast<float>(thickness) / 2.f, static_cast<float>(height) / 2.f },
         rotDeg,
         color
     );

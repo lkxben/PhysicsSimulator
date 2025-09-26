@@ -58,7 +58,7 @@ struct LaunchableParticle : public Particle, public Interactive {
     }
 
     void draw() const override {
-        DrawCircle(static_cast<int>(x), static_cast<int>(y), radius, color);
+        DrawCircleV({static_cast<float>(x), static_cast<float>(y)}, radius, color);
 
         if (isDragging) {
             float toMouseX = dragCurrentX - x;
@@ -72,9 +72,7 @@ struct LaunchableParticle : public Particle, public Interactive {
                 float lineEndX = x - dirX * (radius + dist);
                 float lineEndY = y - dirY * (radius + dist);
 
-                DrawLine(static_cast<int>(x), static_cast<int>(y),
-                         static_cast<int>(lineEndX), static_cast<int>(lineEndY),
-                         YELLOW);
+                DrawLineEx({static_cast<float>(x), static_cast<float>(y)}, {lineEndX, lineEndY}, 1.0f, YELLOW);
             }
         }
     }

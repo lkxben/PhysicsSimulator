@@ -32,8 +32,7 @@ struct DistanceConstraint : Constraint {
         float endX = static_cast<float>(b->x - ux * b->radius);
         float endY = static_cast<float>(b->y - uy * b->radius);
 
-        DrawLine(static_cast<int>(startX), static_cast<int>(startY),
-                 static_cast<int>(endX), static_cast<int>(endY), color);
+        DrawLineEx({startX, startY}, {endX, endY}, 1.0f, CLITERAL(Color){color.r, color.g, color.b, color.a});
     }
 
     void apply(double dt, int iterations, IntegratorType integrator) override {

@@ -34,7 +34,8 @@ struct Particle : public Entity {
     virtual ~Particle() = default;
 
     void draw() const override {
-        DrawCircle(static_cast<int>(x), static_cast<int>(y), static_cast<float>(radius),
-                CLITERAL(Color){color.r, color.g, color.b, color.a});
+        DrawCircleV({static_cast<float>(x), static_cast<float>(y)},
+                    static_cast<float>(radius),
+                    CLITERAL(Color){color.r, color.g, color.b, color.a});
     }
 };

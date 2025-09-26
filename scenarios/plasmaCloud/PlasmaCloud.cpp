@@ -16,7 +16,9 @@ int main() {
     const unsigned int windowWidth = 800;
     const unsigned int windowHeight = 600;
 
-    sf::RenderWindow window{sf::VideoMode{sf::Vector2u{windowWidth, windowHeight}}, "Plasma Cloud"};
+    InitWindow(windowWidth, windowHeight, "Plasma Cloud");
+    SetTargetFPS(60);
+
     World world;
 
     // Random generators
@@ -30,7 +32,7 @@ int main() {
         bool isProton = (i % 3 == 0);
         double charge = isProton ? +5.0 : -5.0;
         double mass   = isProton ? 20.0 : 1.0;
-        sf::Color color = isProton ? sf::Color::Red : sf::Color::Blue;
+        Color color = isProton ? RED : BLUE;
 
         world.particles.push_back(std::make_unique<Particle>(ParticleParams{
             .x = distX(rng),
@@ -52,9 +54,9 @@ int main() {
     simulator.addSystem(std::move(forceSystem));
     simulator.addSystem(std::make_unique<EulerIntegratorSystem>(true, windowWidth, windowHeight));
     simulator.addSystem(std::make_unique<CollisionSystem>(world, windowWidth, windowHeight));
-    simulator.addSystem(std::make_unique<RenderSystem>(window));
+    simulator.addSystem(std::make_unique<RenderSystem>());
 
-    EventManager events{window};
+    EventManager events;
 
     // Run simulation
     simulator.run(world, events);
