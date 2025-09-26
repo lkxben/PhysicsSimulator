@@ -16,14 +16,14 @@ public:
         }
     }
 
-    void pollEvents() {
+    void pollEvents(double dt) {
         while (auto eventOpt = window.pollEvent()) {
             const sf::Event& event = *eventOpt;
             if (event.is<sf::Event::Closed>())
                 window.close();
 
             for (auto* obj : interactives)
-                obj->handleEvent(event, window);
+                obj->handleEvent(event, window, dt);
         }
     }
 };

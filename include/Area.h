@@ -27,7 +27,7 @@ struct CircleArea : Area {
         circle.setOrigin({radius, radius});
         circle.setPosition({x, y});
         circle.setFillColor(sf::Color::Transparent);
-        circle.setOutlineColor(sf::Color::Red);
+        circle.setOutlineColor(color);
         circle.setOutlineThickness(1.f);
         window.draw(circle);
     }

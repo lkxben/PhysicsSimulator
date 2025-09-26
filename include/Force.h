@@ -21,10 +21,10 @@ struct Force {
             double fx = f * dx / dist;
             double fy = f * dy / dist;
 
-            p1.fx += fx;
-            p1.fy += fy;
-            p2.fx -= fx;
-            p2.fy -= fy;
+            p1.ax += fx / p1.mass;
+            p1.ay += fy / p1.mass;
+            p2.ax -= fx / p2.mass;
+            p2.ay -= fy / p2.mass;
         });
     }
 
@@ -40,10 +40,10 @@ struct Force {
             double fx = -f * dx / dist;
             double fy = -f * dy / dist;
 
-            p1.fx += fx;
-            p1.fy += fy;
-            p2.fx -= fx;
-            p2.fy -= fy;
+            p1.ax += fx / p1.mass;
+            p1.ay += fy / p1.mass;
+            p2.ax -= fx / p2.mass;
+            p2.ay -= fy / p2.mass;
         });
     }
 };

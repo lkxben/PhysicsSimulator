@@ -2,29 +2,37 @@
 #include <vector>
 #include "Particle.h"
 #include "Entity.h"
-#include "Renderer.h"
+#include "RenderSystem.h"
 #include "Obstacle.h"
 #include "Forcefield.h"
 #include "EventManager.h"
 #include "ForceSystem.h"
+#include "ConstraintSystem.h"
+#include "Constraint.h"
 
-class Simulator {
-protected:
-    std::vector<std::unique_ptr<Obstacle>> obstacles;
-    std::vector<std::unique_ptr<Particle>> particles;
-    std::vector<std::unique_ptr<Forcefield>> forcefields;
-    double width, height;
-    int cols, rows;
-    size_t avgPerCell;
-    double cellSize;
-    std::vector<std::vector<int>> grid;
+struct Simulator {
+    std::vector<std::unique_ptr<System>> systems;
 
-public:
-    Simulator(std::vector<std::unique_ptr<Obstacle>>& obstacles_, std::vector<std::unique_ptr<Particle>>& particles_, std::vector<std::unique_ptr<Forcefield>>& forcefields_, double w, double h);
+    void addSystem(std::unique_ptr<System> system) {
+        systems.push_back(std::move(system));
+    }
 
-    virtual void update(double dt);
+    void run(World& world, EventManager& events) {
+        sf::Clock clock;
 
-    void run(Renderer& renderer, EventManager& events, ForceSystem& fs);
+        while (true) {
+            double dt = clock.restart().asSeconds();
+            events.pollEvents(dt);
+
+            world.reset();
+            for (auto& system : systems) {
+                system->update(world, dt);
+            }
+
+            auto renderSystem = dynamic_cast<RenderSystem*>(systems.back().get());
+            if (renderSystem && !renderSystem->isRunning()) break;
+        }
+    }
 
     virtual ~Simulator() = default;
 };

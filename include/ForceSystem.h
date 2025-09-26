@@ -1,9 +1,11 @@
 #pragma once
 #include <vector>
+#include "System.h"
 #include "Particle.h"
+#include "World.h"
 #include "Force.h"
 
-class ForceSystem {
+class ForceSystem : public System {
 public:
     std::vector<Force> forces;
 
@@ -11,6 +13,14 @@ public:
         forces.push_back(f);
     }
 
-    void apply(const std::vector<std::unique_ptr<Particle>>& particles, double dt);
+    void update(World& world, double dt) override {
+        // Apply inter-particle forces
+        for (auto& force : forces) {
+            for (size_t i = 0; i < world.particles.size(); ++i) {
+                for (size_t j = i + 1; j < world.particles.size(); ++j) {
+                    force.func(*world.particles[i], *world.particles[j], dt);
+                }
+            }
+        }
+    }
 };
-
