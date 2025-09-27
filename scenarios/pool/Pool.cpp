@@ -1,6 +1,12 @@
 #include <vector>
 #include <memory>
 #include <random>
+#include "raylib.h"
+
+#if defined(__EMSCRIPTEN__)
+#include <emscripten/emscripten.h>
+#endif
+
 #include "../include/World.h"
 #include "../include/Simulator.h"
 #include "../include/EventManager.h"
@@ -17,15 +23,35 @@
 #include "Ball.h"
 #include "Pocket.h"
 
+const unsigned int windowWidth = 1000;
+const unsigned int windowHeight = 600;
+const double FPS = 200.0;
+const double dt = 1.0 / FPS;
+
+World world;
+Simulator simulator;
+EventManager events;
+
+void updateDrawFrame();
+void initSim();
+
 int main() {
-    const unsigned int windowWidth = 1000;
-    const unsigned int windowHeight = 600;
-
     InitWindow(windowWidth, windowHeight, "Pool");
-    SetTargetFPS(200);
 
-    World world;
+    initSim();
 
+#if defined(__EMSCRIPTEN__)
+    emscripten_set_main_loop(updateDrawFrame, FPS, 1);
+#else
+    SetTargetFPS(FPS);
+    simulator.run(world, events);
+#endif
+
+    CloseWindow();
+    return 0;
+}
+
+void initSim() {
     // Set up balls
     struct Vec2 { double x, y; };
     double xShift = 180;
@@ -96,20 +122,17 @@ int main() {
     ));
 
     // Launchable particle
-    EventManager events;
     auto particle = std::make_unique<LaunchableParticle>(300, 300, 1.0, 8.0, 0.9, WHITE, 2000);
     events.registerInteractive(particle.get());
     world.particles.push_back(std::move(particle));
 
     // Systems
-    Simulator simulator;
     simulator.addSystem(std::make_unique<ForcefieldSystem>());
     simulator.addSystem(std::make_unique<EulerIntegratorSystem>(true, windowWidth, windowHeight));
     simulator.addSystem(std::make_unique<CollisionSystem>(world, windowWidth, windowHeight));
     simulator.addSystem(std::make_unique<RenderSystem>());
+}
 
-    // Run simulation
-    simulator.run(world, events);
-
-    return 0;
+void updateDrawFrame() {
+    simulator.step(world, events, dt);
 }

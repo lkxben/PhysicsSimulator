@@ -24,20 +24,18 @@ World world;
 Simulator simulator;
 EventManager events;
 
-void UpdateDrawFrame();
-void InitSimulation();
+void updateDrawFrame();
+void initSim();
 
-int main(void)
-{
+int main() {
     InitWindow(windowWidth, windowHeight, "Three Body Simulation");
 
-    InitSimulation();
+    initSim();
 
 #if defined(__EMSCRIPTEN__)
-    emscripten_set_main_loop(UpdateDrawFrame, FPS, 1);
+    emscripten_set_main_loop(updateDrawFrame, FPS, 1);
 #else
     SetTargetFPS(FPS);
-
     simulator.run(world, events);
 #endif
 
@@ -45,7 +43,7 @@ int main(void)
     return 0;
 }
 
-void InitSimulation()
+void initSim()
 {
     double cx = windowWidth / 2.0;
     double cy = windowHeight / 2.0;
@@ -86,7 +84,7 @@ void InitSimulation()
     simulator.addSystem(std::make_unique<RenderSystem>());
 }
 
-void UpdateDrawFrame()
+void updateDrawFrame()
 {
     simulator.step(world, events, dt);
 }

@@ -1,5 +1,11 @@
 #include <vector>
 #include <memory>
+#include "raylib.h"
+
+#if defined(__EMSCRIPTEN__)
+#include <emscripten/emscripten.h>
+#endif
+
 #include "../include/World.h"
 #include "../include/Simulator.h"
 #include "../include/EventManager.h"
@@ -13,15 +19,36 @@
 #include "ClothCuttingSystem.h"
 #include "ClothParticle.h"
 
+const unsigned int windowWidth = 800;
+const unsigned int windowHeight = 600;
+const double FPS = 60.0;
+const double dt = 1.0 / FPS;
+
+World world;
+Simulator simulator;
+EventManager events;
+
+void updateDrawFrame();
+void initSim();
+
 int main() {
-    const unsigned int windowWidth = 800;
-    const unsigned int windowHeight = 600;
 
     InitWindow(windowWidth, windowHeight, "Cloth Cut");
-    SetTargetFPS(120);
 
-    World world;
+    initSim();
 
+#if defined(__EMSCRIPTEN__)
+    emscripten_set_main_loop(updateDrawFrame, FPS, 1);
+#else
+    SetTargetFPS(FPS);
+    simulator.run(world, events);
+#endif
+
+    CloseWindow();
+    return 0;
+}
+
+void initSim() {
     const int rows = 50;
     const int cols = 100;
     const double spacing = 6.0;
@@ -77,18 +104,17 @@ int main() {
         std::make_unique<DragEffect>(1)
     ));
 
-    EventManager events;
     auto cuttingSystem = std::make_unique<ClothCuttingSystem>(5.0);
     events.registerInteractive(cuttingSystem.get()); 
 
     // Systems
-    Simulator simulator;
     simulator.addSystem(std::make_unique<ForcefieldSystem>());
     simulator.addSystem(std::move(cuttingSystem));
     simulator.addSystem(std::make_unique<VerletIntegratorSystem>());
     simulator.addSystem(std::make_unique<ConstraintSystem>(IntegratorType::Verlet));
     simulator.addSystem(std::make_unique<RenderSystem>());
-    simulator.run(world, events);
+}
 
-    return 0;
+void updateDrawFrame() {
+    simulator.step(world, events, dt);
 }

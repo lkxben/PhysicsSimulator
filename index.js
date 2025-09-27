@@ -9714,6 +9714,17 @@ async function createWasm() {
 
 
 
+  function _random_get(buffer, size) {
+  try {
+  
+      randomFill(HEAPU8.subarray(buffer, buffer + size));
+      return 0;
+    } catch (e) {
+    if (typeof FS == 'undefined' || !(e.name === 'ErrnoError')) throw e;
+    return e.errno;
+  }
+  }
+
 
 
   var runAndAbortIfError = (func) => {
@@ -10817,6 +10828,7 @@ if (Module['wasmBinary']) wasmBinary = Module['wasmBinary'];
   Module['_fd_seek'] = _fd_seek;
   Module['_fd_write'] = _fd_write;
   Module['doWritev'] = doWritev;
+  Module['_random_get'] = _random_get;
   Module['Asyncify'] = Asyncify;
   Module['runAndAbortIfError'] = runAndAbortIfError;
   Module['runtimeKeepalivePush'] = runtimeKeepalivePush;
@@ -10830,21 +10842,21 @@ function checkIncomingModuleAPI() {
   ignoredModuleProp('fetchSettings');
 }
 var ASM_CONSTS = {
-  100040: () => { Module.canvas.focus(); },  
- 100065: () => { window.addEventListener("keydown", (event) => { var key = stringToNewUTF8(event.key); var code = stringToNewUTF8(event.code); Module._RGFW_handleKeyMods(event.getModifierState("CapsLock"), event.getModifierState("NumLock"), event.getModifierState("Control"), event.getModifierState("Alt"), event.getModifierState("Shift"), event.getModifierState("Meta"), event.getModifierState("ScrollLock")); Module._RGFW_handleKeyEvent(key, code, 1); _free(key); _free(code); }, true); window.addEventListener("keyup", (event) => { var key = stringToNewUTF8(event.key); var code = stringToNewUTF8(event.code); Module._RGFW_handleKeyMods(event.getModifierState("CapsLock"), event.getModifierState("NumLock"), event.getModifierState("Control"), event.getModifierState("Alt"), event.getModifierState("Shift"), event.getModifierState("Meta"), event.getModifierState("ScrollLock")); Module._RGFW_handleKeyEvent(key, code, 0); _free(key); _free(code); }, true); },  
- 101011: () => { var canvas = document.getElementById('canvas'); canvas.addEventListener('drop', function(e) { e.preventDefault(); if (e.dataTransfer.file < 0) return; var filenamesArray = []; var count = e.dataTransfer.files.length; var drop_dir = '.rgfw_dropped_files'; Module._RGFW_mkdir(drop_dir); for (var i = 0; i < count; i++) { var file = e.dataTransfer.files[i]; var path = '/' + drop_dir + '/' + file.name.replace("//", '_'); var reader = new FileReader(); reader.onloadend = (e) => { if (reader.readyState != 2) { out('failed to read dropped file: '+file.name+': '+reader.error); } else { var data = e.target.result; _RGFW_writeFile(path, new Uint8Array(data), file.size); } }; reader.readAsArrayBuffer(file); var filename = stringToNewUTF8(path); filenamesArray.push(filename); Module._RGFW_makeSetValue(i, filename); } Module._Emscripten_onDrop(count); for (var i = 0; i < count; ++i) { _free(filenamesArray[i]); } }, true); canvas.addEventListener('dragover', function(e) { e.preventDefault(); return false; }, true); },  
- 102030: ($0) => { document.getElementById("canvas").style.cursor = UTF8ToString($0); },  
- 102101: () => { document.getElementById('canvas').style.cursor = 'none'; },  
- 102158: () => { return window.mouseX || 0; },  
- 102189: () => { return window.mouseY || 0; },  
- 102220: ($0) => { var canvas = document.getElementById('canvas'); if ($0) { canvas.style.pointerEvents = 'none'; } else { canvas.style.pointerEvents = 'auto'; } },  
- 102367: ($0) => { navigator.clipboard.writeText(UTF8ToString($0)); },  
- 102420: () => { return window.innerWidth; },  
- 102450: () => { return window.innerHeight; },  
- 102481: ($0, $1) => { var ext = UTF8ToString($0, $1); var canvas = document.querySelector('canvas'); var gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl'); if (!gl) return 0; var supported = gl.getSupportedExtensions(); return supported && supported.includes(ext) ? 1 : 0; },  
- 102761: () => { Module.requestFullscreen(false, true); },  
- 102800: () => { Module.exitFullscreen(false, true); },  
- 102836: ($0, $1) => { var element = document.getElementById("canvas"); if (element) element.style.opacity = $1; }
+  100808: () => { Module.canvas.focus(); },  
+ 100833: () => { window.addEventListener("keydown", (event) => { var key = stringToNewUTF8(event.key); var code = stringToNewUTF8(event.code); Module._RGFW_handleKeyMods(event.getModifierState("CapsLock"), event.getModifierState("NumLock"), event.getModifierState("Control"), event.getModifierState("Alt"), event.getModifierState("Shift"), event.getModifierState("Meta"), event.getModifierState("ScrollLock")); Module._RGFW_handleKeyEvent(key, code, 1); _free(key); _free(code); }, true); window.addEventListener("keyup", (event) => { var key = stringToNewUTF8(event.key); var code = stringToNewUTF8(event.code); Module._RGFW_handleKeyMods(event.getModifierState("CapsLock"), event.getModifierState("NumLock"), event.getModifierState("Control"), event.getModifierState("Alt"), event.getModifierState("Shift"), event.getModifierState("Meta"), event.getModifierState("ScrollLock")); Module._RGFW_handleKeyEvent(key, code, 0); _free(key); _free(code); }, true); },  
+ 101779: () => { var canvas = document.getElementById('canvas'); canvas.addEventListener('drop', function(e) { e.preventDefault(); if (e.dataTransfer.file < 0) return; var filenamesArray = []; var count = e.dataTransfer.files.length; var drop_dir = '.rgfw_dropped_files'; Module._RGFW_mkdir(drop_dir); for (var i = 0; i < count; i++) { var file = e.dataTransfer.files[i]; var path = '/' + drop_dir + '/' + file.name.replace("//", '_'); var reader = new FileReader(); reader.onloadend = (e) => { if (reader.readyState != 2) { out('failed to read dropped file: '+file.name+': '+reader.error); } else { var data = e.target.result; _RGFW_writeFile(path, new Uint8Array(data), file.size); } }; reader.readAsArrayBuffer(file); var filename = stringToNewUTF8(path); filenamesArray.push(filename); Module._RGFW_makeSetValue(i, filename); } Module._Emscripten_onDrop(count); for (var i = 0; i < count; ++i) { _free(filenamesArray[i]); } }, true); canvas.addEventListener('dragover', function(e) { e.preventDefault(); return false; }, true); },  
+ 102798: ($0) => { document.getElementById("canvas").style.cursor = UTF8ToString($0); },  
+ 102869: () => { document.getElementById('canvas').style.cursor = 'none'; },  
+ 102926: () => { return window.mouseX || 0; },  
+ 102957: () => { return window.mouseY || 0; },  
+ 102988: ($0) => { var canvas = document.getElementById('canvas'); if ($0) { canvas.style.pointerEvents = 'none'; } else { canvas.style.pointerEvents = 'auto'; } },  
+ 103135: ($0) => { navigator.clipboard.writeText(UTF8ToString($0)); },  
+ 103188: () => { return window.innerWidth; },  
+ 103218: () => { return window.innerHeight; },  
+ 103249: ($0, $1) => { var ext = UTF8ToString($0, $1); var canvas = document.querySelector('canvas'); var gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl'); if (!gl) return 0; var supported = gl.getSupportedExtensions(); return supported && supported.includes(ext) ? 1 : 0; },  
+ 103529: () => { Module.requestFullscreen(false, true); },  
+ 103568: () => { Module.exitFullscreen(false, true); },  
+ 103604: ($0, $1) => { var element = document.getElementById("canvas"); if (element) element.style.opacity = $1; }
 };
 
 // Imports from the Wasm binary.
@@ -10870,13 +10882,14 @@ var dynCall_ii = Module['dynCall_ii'] = makeInvalidEarlyAccess('dynCall_ii');
 var dynCall_vi = Module['dynCall_vi'] = makeInvalidEarlyAccess('dynCall_vi');
 var dynCall_viid = Module['dynCall_viid'] = makeInvalidEarlyAccess('dynCall_viid');
 var dynCall_v = Module['dynCall_v'] = makeInvalidEarlyAccess('dynCall_v');
-var dynCall_vii = Module['dynCall_vii'] = makeInvalidEarlyAccess('dynCall_vii');
-var dynCall_viiii = Module['dynCall_viiii'] = makeInvalidEarlyAccess('dynCall_viiii');
 var dynCall_iii = Module['dynCall_iii'] = makeInvalidEarlyAccess('dynCall_iii');
+var dynCall_vid = Module['dynCall_vid'] = makeInvalidEarlyAccess('dynCall_vid');
 var dynCall_iiii = Module['dynCall_iiii'] = makeInvalidEarlyAccess('dynCall_iiii');
+var dynCall_vii = Module['dynCall_vii'] = makeInvalidEarlyAccess('dynCall_vii');
 var dynCall_viii = Module['dynCall_viii'] = makeInvalidEarlyAccess('dynCall_viii');
 var dynCall_viiiii = Module['dynCall_viiiii'] = makeInvalidEarlyAccess('dynCall_viiiii');
 var dynCall_viidi = Module['dynCall_viidi'] = makeInvalidEarlyAccess('dynCall_viidi');
+var dynCall_viiii = Module['dynCall_viiii'] = makeInvalidEarlyAccess('dynCall_viiii');
 var dynCall_vffff = Module['dynCall_vffff'] = makeInvalidEarlyAccess('dynCall_vffff');
 var dynCall_vf = Module['dynCall_vf'] = makeInvalidEarlyAccess('dynCall_vf');
 var dynCall_viiiiiiii = Module['dynCall_viiiiiiii'] = makeInvalidEarlyAccess('dynCall_viiiiiiii');
@@ -10926,13 +10939,14 @@ function assignWasmExports(wasmExports) {
   Module['dynCall_vi'] = dynCalls['vi'] = dynCall_vi = createExportWrapper('dynCall_vi', 2);
   Module['dynCall_viid'] = dynCalls['viid'] = dynCall_viid = createExportWrapper('dynCall_viid', 4);
   Module['dynCall_v'] = dynCalls['v'] = dynCall_v = createExportWrapper('dynCall_v', 1);
-  Module['dynCall_vii'] = dynCalls['vii'] = dynCall_vii = createExportWrapper('dynCall_vii', 3);
-  Module['dynCall_viiii'] = dynCalls['viiii'] = dynCall_viiii = createExportWrapper('dynCall_viiii', 5);
   Module['dynCall_iii'] = dynCalls['iii'] = dynCall_iii = createExportWrapper('dynCall_iii', 3);
+  Module['dynCall_vid'] = dynCalls['vid'] = dynCall_vid = createExportWrapper('dynCall_vid', 3);
   Module['dynCall_iiii'] = dynCalls['iiii'] = dynCall_iiii = createExportWrapper('dynCall_iiii', 4);
+  Module['dynCall_vii'] = dynCalls['vii'] = dynCall_vii = createExportWrapper('dynCall_vii', 3);
   Module['dynCall_viii'] = dynCalls['viii'] = dynCall_viii = createExportWrapper('dynCall_viii', 4);
   Module['dynCall_viiiii'] = dynCalls['viiiii'] = dynCall_viiiii = createExportWrapper('dynCall_viiiii', 6);
   Module['dynCall_viidi'] = dynCalls['viidi'] = dynCall_viidi = createExportWrapper('dynCall_viidi', 5);
+  Module['dynCall_viiii'] = dynCalls['viiii'] = dynCall_viiii = createExportWrapper('dynCall_viiii', 5);
   Module['dynCall_vffff'] = dynCalls['vffff'] = dynCall_vffff = createExportWrapper('dynCall_vffff', 5);
   Module['dynCall_vf'] = dynCalls['vf'] = dynCall_vf = createExportWrapper('dynCall_vf', 2);
   Module['dynCall_viiiiiiii'] = dynCalls['viiiiiiii'] = dynCall_viiiiiiii = createExportWrapper('dynCall_viiiiiiii', 9);
@@ -11709,7 +11723,9 @@ var wasmImports = {
   /** @export */
   glVertexAttribPointer: _glVertexAttribPointer,
   /** @export */
-  glViewport: _glViewport
+  glViewport: _glViewport,
+  /** @export */
+  random_get: _random_get
 };
 
 

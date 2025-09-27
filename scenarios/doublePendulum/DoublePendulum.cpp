@@ -1,5 +1,11 @@
 #include <vector>
 #include <memory>
+#include "raylib.h"
+
+#if defined(__EMSCRIPTEN__)
+#include <emscripten/emscripten.h>
+#endif
+
 #include "../include/World.h"
 #include "../include/Simulator.h"
 #include "../include/EventManager.h"
@@ -11,15 +17,35 @@
 #include "../include/RenderSystem.h"
 #include "../include/EulerIntegratorSystem.h"
 
+const unsigned int windowWidth = 800;
+const unsigned int windowHeight = 1000;
+const double FPS = 60.0;
+const double dt = 1.0 / FPS;
+
+World world;
+Simulator simulator;
+EventManager events;
+
+void updateDrawFrame();
+void initSim();
+
 int main() {
-    const unsigned int windowWidth = 800;
-    const unsigned int windowHeight = 1000;
-
     InitWindow(windowWidth, windowHeight, "Double Pendulum");
-    SetTargetFPS(60);
 
-    World world;
+    initSim();
 
+#if defined(__EMSCRIPTEN__)
+    emscripten_set_main_loop(updateDrawFrame, FPS, 1);
+#else
+    SetTargetFPS(FPS);
+    simulator.run(world, events);
+#endif
+
+    CloseWindow();
+    return 0;
+}
+
+void initSim() {
     // Pivot particle (fixed)
     auto pivot = std::make_unique<Particle>(ParticleParams{
         .x = 400.0, .y = 500.0, .radius = 5.0, .color = WHITE
@@ -55,16 +81,12 @@ int main() {
     ));
 
     // Simulator and systems
-    Simulator simulator;
     simulator.addSystem(std::make_unique<ForcefieldSystem>());
     simulator.addSystem(std::make_unique<EulerIntegratorSystem>(true, windowWidth, windowHeight));
     simulator.addSystem(std::make_unique<ConstraintSystem>(IntegratorType::Euler));
     simulator.addSystem(std::make_unique<RenderSystem>());
+}
 
-    EventManager events;
-
-    // Run simulation
-    simulator.run(world, events);
-
-    return 0;
+void updateDrawFrame() {
+    simulator.step(world, events, dt);
 }

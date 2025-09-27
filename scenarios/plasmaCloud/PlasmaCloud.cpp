@@ -1,6 +1,12 @@
 #include <vector>
 #include <memory>
 #include <random>
+#include "raylib.h"
+
+#if defined(__EMSCRIPTEN__)
+#include <emscripten/emscripten.h>
+#endif
+
 #include "../include/World.h"
 #include "../include/Simulator.h"
 #include "../include/EventManager.h"
@@ -11,15 +17,36 @@
 #include "../include/RenderSystem.h"
 #include "../include/EulerIntegratorSystem.h"
 
-int main() {
-    const unsigned int windowWidth = 800;
-    const unsigned int windowHeight = 600;
+const unsigned int windowWidth = 800;
+const unsigned int windowHeight = 600;
+const double FPS = 60.0;
+const double dt = 1.0 / FPS;
 
+World world;
+Simulator simulator;
+EventManager events;
+
+void updateDrawFrame();
+void initSim();
+
+int main() {
     InitWindow(windowWidth, windowHeight, "Plasma Cloud");
     SetTargetFPS(60);
 
-    World world;
+    initSim();
 
+#if defined(__EMSCRIPTEN__)
+    emscripten_set_main_loop(updateDrawFrame, FPS, 1);
+#else
+    SetTargetFPS(FPS);
+    simulator.run(world, events);
+#endif
+
+    CloseWindow();
+    return 0;
+}
+
+void initSim() {
     // Random generators
     std::mt19937 rng(std::random_device{}());
     std::uniform_real_distribution<double> distX(100.0, 700.0);
@@ -49,16 +76,12 @@ int main() {
     auto forceSystem = std::make_unique<ForceSystem>();
     forceSystem->addForce(Force::electric(1000));
 
-    Simulator simulator;
     simulator.addSystem(std::move(forceSystem));
     simulator.addSystem(std::make_unique<EulerIntegratorSystem>(true, windowWidth, windowHeight));
     simulator.addSystem(std::make_unique<CollisionSystem>(world, windowWidth, windowHeight));
     simulator.addSystem(std::make_unique<RenderSystem>());
+}
 
-    EventManager events;
-
-    // Run simulation
-    simulator.run(world, events);
-
-    return 0;
+void updateDrawFrame() {
+    simulator.step(world, events, dt);
 }

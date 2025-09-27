@@ -1,5 +1,11 @@
 #include <vector>
 #include <memory>
+#include "raylib.h"
+
+#if defined(__EMSCRIPTEN__)
+#include <emscripten/emscripten.h>
+#endif
+
 #include "../include/World.h"
 #include "../include/Simulator.h"
 #include "../include/EventManager.h"
@@ -12,17 +18,37 @@
 #include "../include/VerletIntegratorSystem.h"
 #include "MouseForceField.h"
 
+const unsigned int windowWidth = 800;
+const unsigned int windowHeight = 600;
+const double FPS = 60.0;
+const double dt = 1.0 / FPS;
+
+World world;
+Simulator simulator;
+EventManager events;
+
+void updateDrawFrame();
+void initSim();
+
 int main() {
-    const unsigned int windowWidth = 800;
-    const unsigned int windowHeight = 600;
+    InitWindow(windowWidth, windowHeight, "Cloth Movement");
 
-    InitWindow(windowWidth, windowHeight, "Cloth Simulation");
-    SetTargetFPS(60);
+    initSim();
 
-    World world;
+#if defined(__EMSCRIPTEN__)
+    emscripten_set_main_loop(updateDrawFrame, FPS, 1);
+#else
+    SetTargetFPS(FPS);
+    simulator.run(world, events);
+#endif
 
+    CloseWindow();
+    return 0;
+}
+
+void initSim() {
     const int rows = 30;
-    const int cols = 80;
+    const int cols = 50;
     const double spacing = 8.0;
 
     std::vector<std::vector<Particle*>> grid(rows, std::vector<Particle*>(cols, nullptr));
@@ -67,8 +93,6 @@ int main() {
         std::make_unique<DragEffect>(1)
     ));
 
-    EventManager events;
-
     std::vector<int> fixedIndices = {0, cols/3, 2*cols/3, cols - 1};
     for (int idx : fixedIndices) {
         auto movable = std::make_unique<MovableFixedPointConstraint>(
@@ -97,15 +121,14 @@ int main() {
     world.forcefields.push_back(std::move(mouseForceField));
 
     // Systems
-    Simulator simulator;
     simulator.addSystem(std::make_unique<ForcefieldSystem>());
     simulator.addSystem(std::make_unique<VerletIntegratorSystem>());
 
     simulator.addSystem(std::make_unique<ConstraintSystem>(IntegratorType::Verlet));
 
     simulator.addSystem(std::make_unique<RenderSystem>());
-    
-    simulator.run(world, events);
+}
 
-    return 0;
+void updateDrawFrame() {
+    simulator.step(world, events, dt);
 }
