@@ -118,7 +118,7 @@ void initSim() {
     // Forcefields
     world.forcefields.push_back(std::make_unique<Forcefield>(
         std::make_unique<RectArea>(500, 300, 736, 376, Color{0,102,204,255}),
-        std::make_unique<DragEffect>(0.50)
+        std::make_unique<DragEffect>(0.65)
     ));
 
     // Launchable particle

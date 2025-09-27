@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <title>Cloth Movement</title>
+    <style>
+      html, body {
+        margin: 0;
+        height: 100%;
+      }
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: black;
+      }
+      canvas.emscripten {
+        border: 2px solid white;
+        background-color: black;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
+
+    <script>
+      var canvasElement = document.getElementById('canvas');
+      canvasElement.addEventListener('webglcontextlost', (e) => {
+        alert('WebGL context lost. You will need to reload the page.');
+        e.preventDefault();
+      }, false);
+    </script>
+    <script async src="clothMovement.js"></script>
+  </body>
+</html>
