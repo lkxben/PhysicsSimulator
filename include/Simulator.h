@@ -35,5 +35,14 @@ struct Simulator {
         }
     }
 
+    void step(World& world, EventManager& events, double dt) {
+        events.pollEvents(dt);
+
+        world.reset();
+        for (auto& system : systems) {
+            system->update(world, dt);
+        }
+    }
+
     virtual ~Simulator() = default;
 };

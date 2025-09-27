@@ -1,27 +1,54 @@
 #include <vector>
 #include <memory>
 #include <cmath>
+#include "raylib.h"
+
+#if defined(__EMSCRIPTEN__)
+#include <emscripten/emscripten.h>
+#endif
+
 #include "../include/World.h"
 #include "../include/Simulator.h"
 #include "../include/EventManager.h"
 #include "../include/ForceSystem.h"
-#include "../include/ForcefieldSystem.h"
-#include "../include/ConstraintSystem.h"
-#include "../include/CollisionSystem.h"
 #include "../include/RenderSystem.h"
 #include "../include/EulerIntegratorSystem.h"
+#include "../include/CollisionSystem.h"
 
-int main() {
-    const unsigned int windowWidth = 800;
-    const unsigned int windowHeight = 600;
+const unsigned int windowWidth = 800;
+const unsigned int windowHeight = 600;
+const double FPS = 60.0;
+const double dt = 1.0 / FPS;
 
-    InitWindow(windowWidth, windowHeight, "Three Body");
-    SetTargetFPS(120);
+World world;
+Simulator simulator;
+EventManager events;
 
-    World world;
+void UpdateDrawFrame();
+void InitSimulation();
 
-    // Set up particles
-    double cx = 400, cy = 300;
+int main(void)
+{
+    InitWindow(windowWidth, windowHeight, "Three Body Simulation");
+
+    InitSimulation();
+
+#if defined(__EMSCRIPTEN__)
+    emscripten_set_main_loop(UpdateDrawFrame, FPS, 1);
+#else
+    SetTargetFPS(FPS);
+
+    simulator.run(world, events);
+#endif
+
+    CloseWindow();
+    return 0;
+}
+
+void InitSimulation()
+{
+    double cx = windowWidth / 2.0;
+    double cy = windowHeight / 2.0;
     double r = 100;
     double m = 500.0;
     double v = 70.0;
@@ -50,21 +77,16 @@ int main() {
         .color = GREEN
     }));
 
-    // Create systems
     auto forceSystem = std::make_unique<ForceSystem>();
     forceSystem->addForce(Force::gravity(2700));
 
-    // Set up simulator
-    Simulator simulator;
     simulator.addSystem(std::move(forceSystem));
     simulator.addSystem(std::make_unique<EulerIntegratorSystem>(true, windowWidth, windowHeight));
     simulator.addSystem(std::make_unique<CollisionSystem>(world, windowWidth, windowHeight));
     simulator.addSystem(std::make_unique<RenderSystem>());
+}
 
-    EventManager events;
-
-    // Run simulation
-    simulator.run(world, events);
-
-    return 0;
+void UpdateDrawFrame()
+{
+    simulator.step(world, events, dt);
 }
