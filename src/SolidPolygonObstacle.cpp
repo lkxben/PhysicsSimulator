@@ -2,33 +2,36 @@
 #include <cmath>
 #include <algorithm>
 
-SolidPolygonObstacle::SolidPolygonObstacle(const std::vector<sf::Vector2f>& verts, double elasticity_, sf::Color color_)
+SolidPolygonObstacle::SolidPolygonObstacle(const std::vector<Vector2>& verts, double elasticity_, Color color_)
     : Obstacle(
-        std::accumulate(verts.begin(), verts.end(), 0.0, [](double sum, const sf::Vector2f& v){ return sum + v.x; }) / verts.size(),
-        std::accumulate(verts.begin(), verts.end(), 0.0, [](double sum, const sf::Vector2f& v){ return sum + v.y; }) / verts.size(),
+        std::accumulate(verts.begin(), verts.end(), 0.0, [](double sum, const Vector2& v){ return sum + v.x; }) / verts.size(),
+        std::accumulate(verts.begin(), verts.end(), 0.0, [](double sum, const Vector2& v){ return sum + v.y; }) / verts.size(),
         elasticity_,
         color_
       ),
       vertices(verts)
 {}
 
-void SolidPolygonObstacle::draw(sf::RenderWindow& window) const {
+void SolidPolygonObstacle::draw() const {
     if (vertices.size() < 3) return;
 
     std::vector<int> indices(vertices.size());
     for (size_t i = 0; i < vertices.size(); ++i) indices[i] = i;
 
-    sf::VertexArray va{sf::PrimitiveType::Triangles};
-
-    auto cross = [](sf::Vector2f a, sf::Vector2f b) { return a.x * b.y - a.y * b.x; };
+    auto cross = [](Vector2 a, Vector2 b) { return a.x * b.y - a.y * b.x; };
     auto isConvex = [&](int i0, int i1, int i2) {
-        sf::Vector2f a = vertices[i0];
-        sf::Vector2f b = vertices[i1];
-        sf::Vector2f c = vertices[i2];
-        return cross(b - a, c - b) < 0;
+        Vector2 a = vertices[i0];
+        Vector2 b = vertices[i1];
+        Vector2 c = vertices[i2];
+        Vector2 ab = { b.x - a.x, b.y - a.y };
+        Vector2 bc = { c.x - b.x, c.y - b.y };
+        return cross(ab, bc) < 0;
     };
-    auto pointInTriangle = [&](sf::Vector2f p, sf::Vector2f a, sf::Vector2f b, sf::Vector2f c) {
-        sf::Vector2f v0 = c - a, v1 = b - a, v2 = p - a;
+
+    auto pointInTriangle = [&](Vector2 p, Vector2 a, Vector2 b, Vector2 c) {
+        Vector2 v0 = { c.x - a.x, c.y - a.y };
+        Vector2 v1 = { b.x - a.x, b.y - a.y };
+        Vector2 v2 = { p.x - a.x, p.y - a.y };
         float dot00 = v0.x*v0.x + v0.y*v0.y;
         float dot01 = v0.x*v1.x + v0.y*v1.y;
         float dot02 = v0.x*v2.x + v0.y*v2.y;
@@ -60,9 +63,7 @@ void SolidPolygonObstacle::draw(sf::RenderWindow& window) const {
             }
 
             if (!anyInside) {
-                va.append({vertices[i0], color});
-                va.append({vertices[i1], color});
-                va.append({vertices[i2], color});
+                DrawTriangle(vertices[i0], vertices[i1], vertices[i2], color);
                 remaining.erase(remaining.begin() + i);
                 earFound = true;
                 break;
@@ -71,7 +72,12 @@ void SolidPolygonObstacle::draw(sf::RenderWindow& window) const {
         if (!earFound) break;
     }
 
-    window.draw(va);
+    // Draw outline for visibility
+    for (size_t i = 0; i < vertices.size(); ++i) {
+        Vector2 a = vertices[i];
+        Vector2 b = vertices[(i + 1) % vertices.size()];
+        DrawLineEx(a, b, 1.0f, color);
+    }
 }
 
 void SolidPolygonObstacle::collide(Particle& p, double dt) const {
@@ -80,8 +86,8 @@ void SolidPolygonObstacle::collide(Particle& p, double dt) const {
     auto pointInPolygon = [&](double px, double py) -> bool {
         int winding = 0;
         for (size_t i = 0; i < vertices.size(); ++i) {
-            const sf::Vector2f& a = vertices[i];
-            const sf::Vector2f& b = vertices[(i + 1) % vertices.size()];
+            const Vector2& a = vertices[i];
+            const Vector2& b = vertices[(i + 1) % vertices.size()];
             if (a.y <= py) {
                 if (b.y > py && (b.x - a.x) * (py - a.y) - (b.y - a.y) * (px - a.x) > 0) ++winding;
             } else {
@@ -117,9 +123,9 @@ void SolidPolygonObstacle::collide(Particle& p, double dt) const {
     }
 
     for (size_t i = 0; i < vertices.size(); ++i) {
-        sf::Vector2f a = vertices[i];
-        sf::Vector2f b = vertices[(i + 1) % vertices.size()];
-        sf::Vector2f edge = b - a;
+        Vector2 a = vertices[i];
+        Vector2 b = vertices[(i + 1) % vertices.size()];
+        Vector2 edge = {b.x - a.x, b.y - a.y};
         double length = std::hypot(edge.x, edge.y);
         double angle = std::atan2(edge.y, edge.x);
 

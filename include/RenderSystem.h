@@ -1,43 +1,33 @@
 #pragma once
-#include <SFML/Graphics.hpp>
-#include <SFML/System/Angle.hpp>
-#include <vector>
+#include "System.h"
 #include "Particle.h"
-#include "SolidRectObstacle.h"
-#include "HollowRectObstacle.h"
-#include "SolidCircleObstacle.h"
-#include "HollowCircleObstacle.h"
-#include "SolidPolygonObstacle.h"
-#include "HollowPolygonObstacle.h"
-#include "LaunchableParticle.h"
+#include "Obstacle.h"
 #include "Forcefield.h"
 #include "Constraint.h"
-#include "System.h"
+#include "World.h"
+#include "raylib.h"
 
 struct RenderSystem : public System {
-    sf::RenderWindow& window;
-
-    RenderSystem(sf::RenderWindow& w) : window(w) {}
-
     void update(World& world, double dt) override {
-        window.clear();
+        BeginDrawing();
+        ClearBackground(BLACK);
 
         for (const auto& f : world.forcefields)
-            f->draw(window);
+            f->draw();
 
         for (const auto& o : world.obstacles)
-            o->draw(window);
+            o->draw();
 
         for (const auto& p : world.particles)
-            p->draw(window);
+            p->draw();
 
         for (const auto& c : world.constraints)
-            c->draw(window);
+            c->draw();
 
-        window.display();
+        EndDrawing();
     }
 
     bool isRunning() const {
-        return window.isOpen();
+        return !WindowShouldClose();
     }
 };

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Web Simulations</title>
+<style>
+  :root {
+    --bg: #0f0f15;
+    --card-bg: #1f1f2a;
+    --text: #f0f0f5;
+    --primary: #ff6ec7;
+    --hover-glow: #ff6ec7;
+  }
+
+  body {
+    margin: 0;
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding: 2rem;
+  }
+
+  h1 {
+    margin-bottom: 2rem;
+    font-size: 2.6rem;
+    font-weight: 600;
+    text-align: center;
+    color: #ffffff;
+    text-shadow: 0 2px 6px rgba(255,255,255,0.2);
+  }
+
+  .main {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 2rem;
+  }
+
+  .row {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+  }
+
+  a.card {
+    background: var(--card-bg);
+    border-radius: 16px;
+    width: 220px;
+    height: 120px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease, border 0.25s ease, text-shadow 0.25s ease;
+    text-decoration: none;
+    cursor: pointer;
+    position: relative;
+    border: 2px solid transparent;
+  }
+
+  a.card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 24px rgba(255, 110, 199, 0.5);
+    background: linear-gradient(145deg, #2a2a3f, #3f3f5a);
+    border: 2px solid var(--hover-glow);
+  }
+
+  a.card span {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--text);
+    text-align: center;
+    pointer-events: none;
+    text-shadow: 0 0 4px rgba(255,110,199,0);
+    transition: text-shadow 0.25s ease;
+  }
+
+  a.card:hover span {
+    text-shadow: 0 0 8px rgba(255,110,199,0.8);
+  }
+
+  @media (max-width: 720px) {
+    .row {
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+  }
+</style>
+</head>
+<body>
+  <h1>Physics Simulation Demos</h1>
+  <div class="main">
+    <div class="row">
+      <a href="clothCut.html" class="card"><span>Cloth Cutting</span></a>
+      <a href="clothMovement.html" class="card"><span>Cloth Movement</span></a>
+      <a href="pool.html" class="card"><span>Pool Simulation</span></a>
+    </div>
+  </div>
+</body>
+</html>

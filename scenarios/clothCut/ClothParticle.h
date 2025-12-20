@@ -4,7 +4,7 @@
 struct ClothParticle : public Particle {
     using Particle::Particle;
 
-    void draw(sf::RenderWindow& window) const override {
+    void draw() const override {
         return;
     }
 };

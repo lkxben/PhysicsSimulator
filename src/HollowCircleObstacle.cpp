@@ -2,21 +2,18 @@
 #include <algorithm>
 #include <cmath>
 
-HollowCircleObstacle::HollowCircleObstacle(double x_, double y_, double radius_, double thickness_, double elasticity_, sf::Color color_)
+HollowCircleObstacle::HollowCircleObstacle(double x_, double y_, double radius_, double thickness_, double elasticity_, Color color_)
     : Obstacle(x_, y_, elasticity_, color_), thickness(thickness_), radius(radius_) {}
 
-void HollowCircleObstacle::draw(sf::RenderWindow& window) const {
-    sf::CircleShape outer(static_cast<float>(radius), 60);
-    outer.setOrigin({static_cast<float>(radius), static_cast<float>(radius)});
-    outer.setPosition({static_cast<float>(x), static_cast<float>(y)});
-    outer.setFillColor(color);
-    window.draw(outer);
+void HollowCircleObstacle::draw() const {
+    Vector2 center{ static_cast<float>(x), static_cast<float>(y) };
 
-    sf::CircleShape inner(static_cast<float>(radius - thickness), 60);
-    inner.setOrigin({static_cast<float>(radius - thickness), static_cast<float>(radius - thickness)});
-    inner.setPosition({static_cast<float>(x), static_cast<float>(y)});
-    inner.setFillColor(sf::Color::Transparent);
-    window.draw(inner);
+    DrawCircleV(center, static_cast<float>(radius), color);
+
+    if (thickness > 0 && radius > thickness) {
+        float innerRadius = static_cast<float>(radius - thickness);
+        DrawCircleV(center, innerRadius, BLACK);
+    }
 }
 
 void HollowCircleObstacle::collide(Particle& p, double dt) const {

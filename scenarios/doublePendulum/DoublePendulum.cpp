@@ -1,6 +1,11 @@
-#include <SFML/Graphics.hpp>
 #include <vector>
 #include <memory>
+#include "raylib.h"
+
+#if defined(__EMSCRIPTEN__)
+#include <emscripten/emscripten.h>
+#endif
+
 #include "../include/World.h"
 #include "../include/Simulator.h"
 #include "../include/EventManager.h"
@@ -12,26 +17,48 @@
 #include "../include/RenderSystem.h"
 #include "../include/EulerIntegratorSystem.h"
 
+const unsigned int windowWidth = 800;
+const unsigned int windowHeight = 1000;
+const double FPS = 60.0;
+const double dt = 1.0 / FPS;
+
+World world;
+Simulator simulator;
+EventManager events;
+
+void updateDrawFrame();
+void initSim();
+
 int main() {
-    const unsigned int windowWidth = 800;
-    const unsigned int windowHeight = 1000;
+    InitWindow(windowWidth, windowHeight, "Double Pendulum");
 
-    sf::RenderWindow window{sf::VideoMode{sf::Vector2u{windowWidth, windowHeight}}, "Double Pendulum"};
-    World world;
+    initSim();
 
+#if defined(__EMSCRIPTEN__)
+    emscripten_set_main_loop(updateDrawFrame, FPS, 1);
+#else
+    SetTargetFPS(FPS);
+    simulator.run(world, events);
+#endif
+
+    CloseWindow();
+    return 0;
+}
+
+void initSim() {
     // Pivot particle (fixed)
     auto pivot = std::make_unique<Particle>(ParticleParams{
-        .x = 400.0, .y = 500.0, .radius = 5.0, .color = sf::Color::Yellow
+        .x = 400.0, .y = 500.0, .radius = 5.0, .color = WHITE
     });
 
     // First bob (middle)
     auto middle = std::make_unique<Particle>(ParticleParams{
-        .x = 400.0, .y = 400.0, .mass = 50.0, .radius = 15.0, .color = sf::Color::Red
+        .x = 400.0, .y = 400.0, .mass = 50.0, .radius = 15.0, .color = RED, .vx = -200.0
     });
 
     // Second bob (end)
     auto end = std::make_unique<Particle>(ParticleParams{
-        .x = 400.0, .y = 250.0, .mass = 20.0, .radius = 10.0, .color = sf::Color::Blue, .vx = 200.0
+        .x = 400.0, .y = 250.0, .mass = 20.0, .radius = 10.0, .color = BLUE, .vx = 500.0
     });
 
     Particle* pivotPtr = pivot.get();
@@ -49,21 +76,17 @@ int main() {
 
     // Forcefield (gravity)
     world.forcefields.push_back(std::make_unique<Forcefield>(
-        std::make_unique<RectArea>(windowWidth/2, windowHeight/2, windowWidth, windowHeight, sf::Color::Black),
+        std::make_unique<RectArea>(windowWidth/2, windowHeight/2, windowWidth, windowHeight, BLACK),
         std::make_unique<GravityEffect>(50)
     ));
 
     // Simulator and systems
-    Simulator simulator;
     simulator.addSystem(std::make_unique<ForcefieldSystem>());
     simulator.addSystem(std::make_unique<EulerIntegratorSystem>(true, windowWidth, windowHeight));
     simulator.addSystem(std::make_unique<ConstraintSystem>(IntegratorType::Euler));
-    simulator.addSystem(std::make_unique<RenderSystem>(window));
+    simulator.addSystem(std::make_unique<RenderSystem>());
+}
 
-    EventManager events{window};
-
-    // Run simulation
-    simulator.run(world, events);
-
-    return 0;
+void updateDrawFrame() {
+    simulator.step(world, events, dt);
 }

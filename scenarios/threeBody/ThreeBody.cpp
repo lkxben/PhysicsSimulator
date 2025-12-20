@@ -1,27 +1,52 @@
-#include <SFML/Graphics.hpp>
 #include <vector>
 #include <memory>
 #include <cmath>
+#include "raylib.h"
+
+#if defined(__EMSCRIPTEN__)
+#include <emscripten/emscripten.h>
+#endif
+
 #include "../include/World.h"
 #include "../include/Simulator.h"
 #include "../include/EventManager.h"
 #include "../include/ForceSystem.h"
-#include "../include/ForcefieldSystem.h"
-#include "../include/ConstraintSystem.h"
-#include "../include/CollisionSystem.h"
 #include "../include/RenderSystem.h"
 #include "../include/EulerIntegratorSystem.h"
+#include "../include/CollisionSystem.h"
+
+const unsigned int windowWidth = 800;
+const unsigned int windowHeight = 600;
+const double FPS = 60.0;
+const double dt = 1.0 / FPS;
+
+World world;
+Simulator simulator;
+EventManager events;
+
+void updateDrawFrame();
+void initSim();
 
 int main() {
-    const unsigned int windowWidth = 800;
-    const unsigned int windowHeight = 600;
+    InitWindow(windowWidth, windowHeight, "Three Body Simulation");
 
-    sf::RenderWindow window{sf::VideoMode{sf::Vector2u{windowWidth, windowHeight}}, "Three Body"};
+    initSim();
 
-    World world;
+#if defined(__EMSCRIPTEN__)
+    emscripten_set_main_loop(updateDrawFrame, FPS, 1);
+#else
+    SetTargetFPS(FPS);
+    simulator.run(world, events);
+#endif
 
-    // Set up particles
-    double cx = 400, cy = 300;
+    CloseWindow();
+    return 0;
+}
+
+void initSim()
+{
+    double cx = windowWidth / 2.0;
+    double cy = windowHeight / 2.0;
     double r = 100;
     double m = 500.0;
     double v = 70.0;
@@ -31,7 +56,7 @@ int main() {
         .vx = 0.0, .vy = v,
         .mass = m,
         .radius = 5.0,
-        .color = sf::Color::Red
+        .color = RED
     }));
 
     world.particles.push_back(std::make_unique<Particle>(ParticleParams{
@@ -39,7 +64,7 @@ int main() {
         .vx = -v * std::sqrt(3) / 2, .vy = -v * 0.5,
         .mass = m,
         .radius = 5.0,
-        .color = sf::Color::Blue
+        .color = BLUE
     }));
 
     world.particles.push_back(std::make_unique<Particle>(ParticleParams{
@@ -47,24 +72,19 @@ int main() {
         .vx = v * std::sqrt(3) / 2, .vy = -v * 0.5,
         .mass = m,
         .radius = 5.0,
-        .color = sf::Color::Green
+        .color = GREEN
     }));
 
-    // Create systems
     auto forceSystem = std::make_unique<ForceSystem>();
     forceSystem->addForce(Force::gravity(2700));
 
-    // Set up simulator
-    Simulator simulator;
     simulator.addSystem(std::move(forceSystem));
     simulator.addSystem(std::make_unique<EulerIntegratorSystem>(true, windowWidth, windowHeight));
     simulator.addSystem(std::make_unique<CollisionSystem>(world, windowWidth, windowHeight));
-    simulator.addSystem(std::make_unique<RenderSystem>(window));
+    simulator.addSystem(std::make_unique<RenderSystem>());
+}
 
-    EventManager events{window};
-
-    // Run simulation
-    simulator.run(world, events);
-
-    return 0;
+void updateDrawFrame()
+{
+    simulator.step(world, events, dt);
 }

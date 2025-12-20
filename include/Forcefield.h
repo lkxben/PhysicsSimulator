@@ -2,7 +2,6 @@
 #include "Area.h"
 #include "Effect.h"
 #include <memory>
-#include <SFML/Graphics.hpp>
 
 struct Forcefield {
     std::unique_ptr<Area> area;
@@ -17,8 +16,8 @@ struct Forcefield {
         }
     }
 
-    void draw(sf::RenderWindow& window) const {
-        area->draw(window);
+    void draw() const {
+        area->draw();
     }
 
     virtual ~Forcefield() = default;

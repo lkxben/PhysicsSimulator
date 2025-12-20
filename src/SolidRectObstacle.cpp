@@ -2,16 +2,21 @@
 #include <cmath>
 #include <algorithm>
 
-SolidRectObstacle::SolidRectObstacle(double x_, double y_, double width_, double height_, double rotation_, double elasticity_, sf::Color color_)
+SolidRectObstacle::SolidRectObstacle(double x_, double y_, double width_, double height_, double rotation_, double elasticity_, Color color_)
     : Obstacle(x_, y_, elasticity_, color_), width(width_), height(height_), rotation(rotation_) {}
 
-void SolidRectObstacle::draw(sf::RenderWindow& window) const {
-    sf::RectangleShape shape{sf::Vector2f(static_cast<float>(width), static_cast<float>(height))};
-    shape.setOrigin({static_cast<float>(width)/2, static_cast<float>(height)/2});
-    shape.setPosition({static_cast<float>(x), static_cast<float>(y)});
-    shape.setRotation(sf::degrees(static_cast<float>(rotation * 180.0 / M_PI)));
-    shape.setFillColor(color);
-    window.draw(shape);
+void SolidRectObstacle::draw() const {
+    Rectangle rect{
+        static_cast<float>(x),
+        static_cast<float>(y),
+        static_cast<float>(width),
+        static_cast<float>(height)
+    };
+    Vector2 origin{
+        static_cast<float>(width / 2.0),
+        static_cast<float>(height / 2.0)
+    };
+    DrawRectanglePro(rect, origin, static_cast<float>(rotation * 180.0 / M_PI), color);
 }
 
 void SolidRectObstacle::collide(Particle& p, double dt) const {
