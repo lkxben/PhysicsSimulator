@@ -53,7 +53,7 @@ void initSim() {
     std::uniform_real_distribution<double> distY(100.0, 500.0);
     std::uniform_real_distribution<double> distV(-10.0, 10.0);
 
-    int numParticles = 100;
+    int numParticles = 500;
     for (int i = 0; i < numParticles; i++) {
         bool isProton = (i % 3 == 0);
         double charge = isProton ? +5.0 : -5.0;
@@ -68,7 +68,8 @@ void initSim() {
             .mass = mass,
             .radius = isProton ? 4.0f : 2.0f,
             .charge = charge,
-            .color = color
+            .color = color,
+            .elasticity = 0.9
         }));
     }
 
